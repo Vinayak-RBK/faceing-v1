@@ -5,13 +5,14 @@ import java.util.List;
 public class ResponseDao {
 
 	private String message;
-	private boolean isSuccess;
-	private boolean isOTPVerified;
-	private boolean isOnBoarded;
-	private boolean isBlocked;
+	private String isSuccess;
+	private String isOTPVerified;
+	private String isOnBoarded;
+	private String isBlocked;
 	private String otp;
 	private String userId;
 	private String emailId;
+	private String pushNotify;
 	private List<SDKinfoDao> sdkInfo;
 	private CommonUserDetailsDao commonUserDetailsDao;
 
@@ -19,8 +20,8 @@ public class ResponseDao {
 		super();
 	}
 
-	public ResponseDao(String message, boolean isSuccess, boolean isOTPVerified, boolean isOnBoarded, boolean isBlocked,
-			String otp, String userId, String emailId, List<SDKinfoDao> sdkInfo,
+	public ResponseDao(String message, String isSuccess, String isOTPVerified, String isOnBoarded, String isBlocked,
+			String otp, String userId, String emailId, String pushNotify, List<SDKinfoDao> sdkInfo,
 			CommonUserDetailsDao commonUserDetailsDao) {
 		super();
 		this.message = message;
@@ -31,10 +32,11 @@ public class ResponseDao {
 		this.otp = otp;
 		this.userId = userId;
 		this.emailId = emailId;
+		this.pushNotify = pushNotify;
 		this.sdkInfo = sdkInfo;
 		this.commonUserDetailsDao = commonUserDetailsDao;
 	}
-
+	
 	public String getMessage() {
 		return message;
 	}
@@ -43,35 +45,35 @@ public class ResponseDao {
 		this.message = message;
 	}
 
-	public boolean isSuccess() {
+	public String getIsSuccess() {
 		return isSuccess;
 	}
 
-	public void setSuccess(boolean isSuccess) {
+	public void setIsSuccess(String isSuccess) {
 		this.isSuccess = isSuccess;
 	}
 
-	public boolean isOTPVerified() {
+	public String getIsOTPVerified() {
 		return isOTPVerified;
 	}
 
-	public void setOTPVerified(boolean isOTPVerified) {
+	public void setIsOTPVerified(String isOTPVerified) {
 		this.isOTPVerified = isOTPVerified;
 	}
 
-	public boolean isOnBoarded() {
+	public String getIsOnBoarded() {
 		return isOnBoarded;
 	}
 
-	public void setOnBoarded(boolean isOnBoarded) {
+	public void setIsOnBoarded(String isOnBoarded) {
 		this.isOnBoarded = isOnBoarded;
 	}
 
-	public boolean isBlocked() {
+	public String getIsBlocked() {
 		return isBlocked;
 	}
 
-	public void setBlocked(boolean isBlocked) {
+	public void setIsBlocked(String isBlocked) {
 		this.isBlocked = isBlocked;
 	}
 
@@ -99,6 +101,14 @@ public class ResponseDao {
 		this.emailId = emailId;
 	}
 
+	public String getPushNotify() {
+		return pushNotify;
+	}
+
+	public void setPushNotify(String pushNotify) {
+		this.pushNotify = pushNotify;
+	}
+
 	public List<SDKinfoDao> getSdkInfo() {
 		return sdkInfo;
 	}
@@ -119,8 +129,8 @@ public class ResponseDao {
 	public String toString() {
 		return "ResponseDao [message=" + message + ", isSuccess=" + isSuccess + ", isOTPVerified=" + isOTPVerified
 				+ ", isOnBoarded=" + isOnBoarded + ", isBlocked=" + isBlocked + ", otp=" + otp + ", userId=" + userId
-				+ ", emailId=" + emailId + ", sdkInfo=" + sdkInfo + ", commonUserDetailsDao=" + commonUserDetailsDao
-				+ "]";
+				+ ", emailId=" + emailId + ", pushNotify=" + pushNotify + ", sdkInfo=" + sdkInfo
+				+ ", commonUserDetailsDao=" + commonUserDetailsDao + "]";
 	}
-	
+
 	}

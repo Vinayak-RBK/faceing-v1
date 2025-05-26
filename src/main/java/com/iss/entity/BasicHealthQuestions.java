@@ -16,42 +16,31 @@ import jakarta.persistence.Table;
 public class BasicHealthQuestions {
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "Question_id", unique = true)
-//	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "basicHealthQuestionsSeqGen")
 	@SequenceGenerator(name = "basicHealthQuestionsSeqGen", sequenceName = "Basic_Health_Questions_sequence", initialValue = 1000000000, allocationSize = 1)
 	private Long questionId;
 
-	@Column(name = "on_boarding_QID", nullable = true, length = 100)
+	@Column(name = "on_boarding_QID",columnDefinition = "TEXT")
 	private String onBoardingQId;
 	
-	@Column(name = "on_boarding_question_name", nullable = true, length = 200)
+	@Column(name = "on_boarding_question_name",columnDefinition = "TEXT")
 	private String onBoardingQuestionName;
 	
 	@Convert(converter = ItemListConverter.class)
 	@Column(name = "on_boarding_question_options", nullable = true, length = 200,columnDefinition = "JSON")
 	private String[] onBoardingOptions;
 	
-//	@Column(name = "on_boarding_A2", nullable = false, length = 200)
-//	private String onBoardingA2;
-//	
-//	@Column(name = "on_boarding_A3", nullable = false, length = 200)
-//	private String onBoardingA3;
-//	
-//	@Column(name = "on_boarding_A4", nullable = false, length = 200)
-//	private String onBoardingA4;
-
-	@Column(name = "regist_date", nullable = true, length = 20)
+	@Column(name = "regist_date",columnDefinition = "TEXT")
 	private String registDate;
 
-	@Column(name = "regist_pname", length = 50)
+	@Column(name = "regist_pname",columnDefinition = "TEXT")
 	private String registPName;
 
-	@Column(name = "last_update_date", nullable = true, length = 20)
+	@Column(name = "last_update_date",columnDefinition = "TEXT")
 	private String lastUpdateDate;
 
-	@Column(name = "last_update_pname", length = 50)
+	@Column(name = "last_update_pname",columnDefinition = "TEXT")
 	private String lastUpdatePName;
 
 	public BasicHealthQuestions() {

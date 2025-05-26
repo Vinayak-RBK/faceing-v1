@@ -4,25 +4,25 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iss.dao.GuestHealthDetailsDao;
-import com.iss.entity.GuestHealthDetail;
-import com.iss.repository.GuestHealthDetailRepository;
+import com.iss.dao.GuestHealthAnuraDetailsDao;
+import com.iss.entity.GuestHealthAnuraDetail;
+import com.iss.repository.GuestHealthAnuraDetailRepository;
 
 @Service
 public class GuestHealthDetailsServiceImpl implements GuestHealthDetailsService {
 
 	@Autowired
-	private GuestHealthDetailRepository guestHealthDetailRepository;
+	private GuestHealthAnuraDetailRepository guestHealthDetailRepository;
 
 	@Override
-	public boolean addGuestHealthDetailService(GuestHealthDetailsDao guestHealthDetailsDao, String dateTimeFormat) {
+	public boolean addGuestHealthDetailService(GuestHealthAnuraDetailsDao guestHealthDetailsDao, String dateTimeFormat) {
 
 		try {
-			GuestHealthDetail guestHealthDetail = new GuestHealthDetail();
+			GuestHealthAnuraDetail guestHealthDetail = new GuestHealthAnuraDetail();
 
 			ModelMapper modelMapper = new ModelMapper();
 
-			guestHealthDetail = modelMapper.map(guestHealthDetailsDao, GuestHealthDetail.class);
+			guestHealthDetail = modelMapper.map(guestHealthDetailsDao, GuestHealthAnuraDetail.class);
 
 			guestHealthDetailRepository.save(guestHealthDetail);
 			return true;

@@ -28,12 +28,16 @@ public interface GuestUserSearchRepository extends JpaRepository<Guest, String> 
 			+ "  AND g.user_email_id = ?2;\r\n" + "", nativeQuery = true)
 	public List<CommonTable> findByGuestName(String guestName, String userEmail);
 
-	
 	@Query(value = "SELECT guests.guest_name, guests.guest_dob, guests.guest_gender,guests.guest_height,guests.guest_weight,guests.guest_id,guests.guest_image,guests.user_email_id,\r\n"
-			+ " guests.user_id,guests.last_update_date,guests.last_update_pname,guests.regist_date,guests.regist_pname\r\n"
+			+ " guests.user_id,guests.is_delete,guests.last_update_date,guests.last_update_pname,guests.regist_date,guests.regist_pname\r\n"
 			+ "FROM guests LEFT JOIN end_user  ON guests.user_id = end_user.user_id\r\n"
-			+ "WHERE end_user.user_id= :userId and guests.is_delete=:isDelete" , nativeQuery = true)
-	
-	Optional<List<Guest>> findByUserId(String userId, boolean isDelete);
+			+ "WHERE end_user.user_id= :userId and guests.is_delete=:isDelete", nativeQuery = true)
+	Optional<List<Guest>> findByUserId(String userId, String isDelete);
+
+	@Query(value = "SELECT guests.guest_name, guests.guest_dob, guests.guest_gender,guests.guest_height,guests.guest_weight,guests.guest_id,guests.guest_image,guests.user_email_id,\r\n"
+			+ " guests.user_id,guests.is_delete,guests.last_update_date,guests.last_update_pname,guests.regist_date,guests.regist_pname\r\n"
+			+ "FROM guests LEFT JOIN end_user  ON guests.user_id = end_user.user_id\r\n"
+			+ "WHERE guests.guest_id=:guestId and end_user.user_id= :userId and guests.is_delete=:isDelete", nativeQuery = true)
+	Optional<List<Guest>> findGuestByGuestIdAndUserId(String guestId, String userId, String isDelete);
 
 }

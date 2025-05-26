@@ -10,25 +10,25 @@ import jakarta.persistence.Table;
 public class SDKTable {
 
 	@Id
-	@Column(name = "PRIMARY_ID", length = 50, nullable = false)
+	@Column(name = "PRIMARY_ID", unique = true, length = 255)
 	private String primaryId;
 	
-	@Column(name = "SDK_ID", length = 50, nullable = false)
+	@Column(name = "SDK_ID", columnDefinition = "TEXT", unique = true)
 	private String sdkId;
 	
-	@Column(name = "SDK_NAME", length = 50, nullable = false)
+	@Column(name = "SDK_NAME", columnDefinition = "TEXT")
 	private String sdkName;
 	
-	@Column(name = "regist_date", length = 20, nullable = true)
+	@Column(name = "regist_date", columnDefinition = "TEXT")
 	private String registDate;
 
-	@Column(name = "regist_pname", length = 50)
+	@Column(name = "regist_pname", columnDefinition = "TEXT")
 	private String registPName;
 
-	@Column(name = "last_update_date", length = 20, nullable = true)
+	@Column(name = "last_update_date", columnDefinition = "TEXT")
 	private String lastUpdateDate;
 
-	@Column(name = "last_update_pname", length = 50)
+	@Column(name = "last_update_pname", columnDefinition = "TEXT")
 	private String lastUpdatePName;
 	
 	public SDKTable() {

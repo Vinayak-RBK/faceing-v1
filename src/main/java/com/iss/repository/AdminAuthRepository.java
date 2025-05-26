@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.iss.entity.AdminUser;
-import com.iss.entity.EndUser;
 
 import jakarta.transaction.Transactional;
 
@@ -44,7 +43,7 @@ public interface AdminAuthRepository extends JpaRepository<AdminUser, String> {
 	@Modifying
 	@Transactional
 	@Query(value = "UPDATE admin_users SET is_verified = :isVerified, last_update_date=:lastUpdateDate, last_update_pname=:lastUpPName  WHERE admin_id = :adminId", nativeQuery = true)
-	public int updateVerifiedByEmailId(boolean isVerified, String lastUpdateDate, String lastUpPName, Long adminId);
+	public int updateVerifiedByEmailId(String isVerified, String lastUpdateDate, String lastUpPName, Long adminId);
 
 	@Query(value = "SELECT * FROM admin_users WHERE admin_email_id = ?1 and admin_otp=?2 and admin_id=?3", nativeQuery = true)
 	public AdminUser findByAdminEmailIdAndOtp(String adminEmail, String adminOTP, Long adminId);
@@ -53,15 +52,15 @@ public interface AdminAuthRepository extends JpaRepository<AdminUser, String> {
 	@Transactional
 	@Query(value = "UPDATE admin_users SET login_attempt_fail_count=:loginCountFail,max_attempt_fail_block_login=:blockFormaxAttempt,locked_date_time_for_login=:lockedDateTime, "
 			+ "login_attempt_max_release_time=:loginAttemptMaxRelTime, last_update_date=:lastUpdateDate, last_update_pname=:lastUpPName WHERE admin_id = :adminId;", nativeQuery = true)
-	public int updateLoginFailCount(int loginCountFail, boolean blockFormaxAttempt, String lockedDateTime,
-			int loginAttemptMaxRelTime, String lastUpdateDate, String lastUpPName, Long adminId);
+	public int updateLoginFailCount(String loginCountFail, String blockFormaxAttempt, String lockedDateTime,
+			String loginAttemptMaxRelTime, String lastUpdateDate, String lastUpPName, Long adminId);
 
 	@Modifying
 	@Transactional
 	@Query(value = "UPDATE admin_users SET login_attempt_max_release_time=:loginAttemptMaxRelTime, last_update_date=:lastUpdateDate, last_update_pname=:lastUpPName WHERE admin_id = :adminId;", nativeQuery = true)
-	public int updateLoginFailTime(int loginAttemptMaxRelTime, String lastUpdateDate, String lastUpPName, Long adminId);
+	public int updateLoginFailTime(String loginAttemptMaxRelTime, String lastUpdateDate, String lastUpPName, Long adminId);
 
 	@Query(value = "Select * from admin_users where max_attempt_fail_block_login=?1", nativeQuery = true)
-	public List<AdminUser> findAllBlockedUserForLogin(boolean isblockedUserForMaxAttempts);
+	public List<AdminUser> findAllBlockedUserForLogin(String isblockedUserForMaxAttempts);
 
 }

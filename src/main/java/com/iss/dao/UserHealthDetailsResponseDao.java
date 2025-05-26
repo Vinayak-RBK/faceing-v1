@@ -5,18 +5,26 @@ import java.util.List;
 public class UserHealthDetailsResponseDao {
 
 	private String msg;
-	private boolean success;
-	private List<UserHealthDetailsDao> useHealthList;
+	private String success;
+	private List<UserHealthAnuraDetailsDao> useHealthAnuraList;
+	private List<UserHealthBinahDetailsDao> useHealthBinahList;
+	private List<UserScannedHealthDataDao> userScannedList;
+	private List<String> values;
 
 	public UserHealthDetailsResponseDao() {
 		super();
 	}
 
-	public UserHealthDetailsResponseDao(String msg, boolean success, List<UserHealthDetailsDao> useHealthList) {
+	public UserHealthDetailsResponseDao(String msg, String success, List<UserHealthAnuraDetailsDao> useHealthAnuraList,
+			List<UserHealthBinahDetailsDao> useHealthBinahList, List<UserScannedHealthDataDao> userScannedList,
+			List<String> values) {
 		super();
 		this.msg = msg;
 		this.success = success;
-		this.useHealthList = useHealthList;
+		this.useHealthAnuraList = useHealthAnuraList;
+		this.useHealthBinahList = useHealthBinahList;
+		this.userScannedList = userScannedList;
+		this.values = values;
 	}
 
 	public String getMsg() {
@@ -27,25 +35,51 @@ public class UserHealthDetailsResponseDao {
 		this.msg = msg;
 	}
 
-	public boolean isSuccess() {
+	public String getSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(String success) {
 		this.success = success;
 	}
 
-	public List<UserHealthDetailsDao> getUseHealthList() {
-		return useHealthList;
+	public List<UserHealthAnuraDetailsDao> getUseHealthAnuraList() {
+		return useHealthAnuraList;
 	}
 
-	public void setUseHealthList(List<UserHealthDetailsDao> useHealthList) {
-		this.useHealthList = useHealthList;
+	public void setUseHealthAnuraList(List<UserHealthAnuraDetailsDao> useHealthAnuraList) {
+		this.useHealthAnuraList = useHealthAnuraList;
+	}
+
+	public List<UserHealthBinahDetailsDao> getUseHealthBinahList() {
+		return useHealthBinahList;
+	}
+
+	public void setUseHealthBinahList(List<UserHealthBinahDetailsDao> useHealthBinahList) {
+		this.useHealthBinahList = useHealthBinahList;
+	}
+
+	public List<UserScannedHealthDataDao> getUserScannedList() {
+		return userScannedList;
+	}
+
+	public void setUserScannedList(List<UserScannedHealthDataDao> userScannedList) {
+		this.userScannedList = userScannedList;
+	}
+
+	public List<String> getValues() {
+		return values;
+	}
+
+	public void setValues(List<String> values) {
+		this.values = values;
 	}
 
 	@Override
 	public String toString() {
-		return "UserHealthDetailsResponseDao [msg=" + msg + ", success=" + success + ", useHealthList=" + useHealthList
-				+ "]";
+		return "UserHealthDetailsResponseDao [msg=" + msg + ", success=" + success + ", useHealthAnuraList="
+				+ useHealthAnuraList + ", useHealthBinahList=" + useHealthBinahList + ", userScannedList="
+				+ userScannedList + ", values=" + values + "]";
 	}
+
 }

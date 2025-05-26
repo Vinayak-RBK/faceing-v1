@@ -13,7 +13,7 @@ public interface AdminQuestionariesService {
 	
 	public AdminResponseDao deleteQuestionaryByQuestionId(String questionId);
 	
-	public AdminResponseDao modifyQuestionaryByQuestionId(BasicHealthQuestionDao dao,String dateTimeFormat,BasicHealthQuestions ent);
+	public AdminResponseDao modifyQuestionaryByQuestionId(BasicHealthQuestionDao dao,String dateTimeFormat);
 	
 	public BasicHealthQuestions deleteRecord(Long id);
 

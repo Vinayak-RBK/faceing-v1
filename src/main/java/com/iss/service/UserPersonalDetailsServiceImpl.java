@@ -18,7 +18,6 @@ import com.iss.dao.PersonalDetailsDao;
 import com.iss.dao.ResponseDao;
 import com.iss.dao.SDKinfoDao;
 import com.iss.dao.UserDao;
-import com.iss.entity.CommonUserDetailsTable;
 import com.iss.entity.EndUser;
 import com.iss.entity.SDKTable;
 import com.iss.entity.UserHealthOnboardingDetail;
@@ -28,6 +27,7 @@ import com.iss.repository.SDKRepository;
 import com.iss.repository.UserHealthOnboardingDetailRepository;
 import com.iss.repository.UserPersonalDetailsRepository;
 import com.iss.repository.UserRepository;
+import com.iss.util.EncryptedDecryptedObjectUtil;
 
 import jakarta.transaction.Transactional;
 
@@ -48,9 +48,18 @@ public class UserPersonalDetailsServiceImpl implements UserPersonalDetailsServic
 
 	@Value("${DUP_EMAIL_ID}")
 	private String DupEmailId;
-	
+
 	@Value("${PROFILE_IMAGE_LOCAL_PATH}")
 	private String imagePath;
+
+	@Value("${SECRET_KEY}")
+	private String secretKey;
+
+	@Value("${SECRET_IV}")
+	private String secretIv;
+
+	@Value("${IS_ENCRYPT_DECRYPT_ENABLE_DATABASE_DATA}")
+	private boolean isEncryptDecryptDatabaseData;
 
 	@Autowired
 	private UserPersonalDetailsRepository userPersonalDetailsRepository;
@@ -79,9 +88,15 @@ public class UserPersonalDetailsServiceImpl implements UserPersonalDetailsServic
 	public ResponseDao insertUserPersonalData(UserDao userDao, PersonalDetailsDao perDetailsDao,
 			List<BasicHealthQuestionDao> healthDetailsListDao, String dateTimeFormat) {
 		CommonUserDetailsDao comUserPerDao = new CommonUserDetailsDao();
+		CommonUserDetailsDao decComUserPerDao = new CommonUserDetailsDao();
 		List<SDKinfoDao> sdkList = new ArrayList<SDKinfoDao>();
-		CommonUserDetailsTable userCommonDetails = new CommonUserDetailsTable();
 		SDKinfoDao sdKinfoDao = new SDKinfoDao();
+		UsersPersonalDetails det = new UsersPersonalDetails();
+		String enCurrentDate = "";
+		String enPName = "";
+		String enIsOnboarded = "";
+		String enEmailId = "";
+		String decEmailId="";
 
 		try {
 			if (!StringUtils.isEmpty(userDao)) {
@@ -92,44 +107,42 @@ public class UserPersonalDetailsServiceImpl implements UserPersonalDetailsServic
 
 				Optional<EndUser> user = userRepository.findById(new Long(userDao.getUserId()));
 
-				UsersPersonalDetails det = new UsersPersonalDetails();
-
-				det = modelMapper.map(perDetailsDao, UsersPersonalDetails.class);
-				
-				if(user.isEmpty())
-				{
+				if (user.isEmpty()) {
 					resDao.setMessage("Received wrong credentials");
-					resDao.setSuccess(false);
+					resDao.setIsSuccess(Boolean.toString(false));
 					return resDao;
 				}
 				
+				det = modelMapper.map(perDetailsDao, UsersPersonalDetails.class);
+				
+				EncryptedDecryptedObjectUtil.getEncryptedObject(det, secretKey, secretIv, isEncryptDecryptDatabaseData);
+
+				enCurrentDate = (String) EncryptedDecryptedObjectUtil.getEncryptedString(currentDate, secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+				enPName = (String) EncryptedDecryptedObjectUtil.getEncryptedString(this.getClass().getSimpleName(),
+						secretKey, secretIv, isEncryptDecryptDatabaseData);
+				
+				decEmailId = (String) EncryptedDecryptedObjectUtil.getDecryptedString(user.get().getUserEmail(), secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+
+				det.setUserEmail(decEmailId);
 				det.setEndUser(user.get());
-				det.setRegistDate(currentDate);
-				det.setRegistPName(this.getClass().getSimpleName());
-				det.setLastUpdateDate(currentDate);
-				det.setLastUpdatePName(this.getClass().getSimpleName());
-				
-//				// creating folder and storing in the given image path
-//				fileObjDao=CreateProfileImagesUtil.storeFile(fileName, imagePath);
-//
-//				// storing image in bucket and getting link and storing that in db image column
-//				String imagePath=DigitalOceanStorageUtil.uploadImage(fileObjDao.getProfileImagePath(), "uploads/userprofile/"+userDao.getUserId().toString()+".jpg");
-//				det.setUserImage(imagePath);
-				
+				det.setRegistDate(enCurrentDate);
+				det.setRegistPName(enPName);
+				det.setLastUpdateDate(enCurrentDate);
+				det.setLastUpdatePName(enPName);
+
 				// Creating Personal Details of user
 				userPersonalDetailsRepository.save(det);
 
+				enIsOnboarded = (String) EncryptedDecryptedObjectUtil.getEncryptedString(Boolean.toString(true),
+						secretKey, secretIv, isEncryptDecryptDatabaseData);
+				enEmailId = (String) EncryptedDecryptedObjectUtil.getEncryptedString(userDao.getEmailId(), secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+
 				// Updating onboarded flag after completing Personal Info and questionaries
-				loginUserRespository.updateUserByOnboardedFlag(true, currentDate, this.getClass().getSimpleName(),
-						new Long(userDao.getUserId()), userDao.getEmailId());
-
-//				loginUserRespository.updateUserLoginFlag(true,currentDate,this.getClass().getSimpleName(),user.getUserId().toString(), user.getUserEmail());
-				// fetching User Personal Details
-				userCommonDetails = userPerDetailsRepository
-						.findUserPersonalDetailsByUserId(new Long(userDao.getUserId()));
-
-				// Copying fetched values from DB to dao.
-				comUserPerDao = modelMapper.map(userCommonDetails, CommonUserDetailsDao.class);
+				loginUserRespository.updateUserByOnboardedFlag(enIsOnboarded, enCurrentDate, enPName,
+						new Long(userDao.getUserId()), enEmailId);
 
 				// Fetching all the available SDK details from DB.
 				List<SDKTable> sdkEntList = sdkRepository.findAll();
@@ -137,9 +150,11 @@ public class UserPersonalDetailsServiceImpl implements UserPersonalDetailsServic
 				UserHealthOnboardingDetail entOnBorading = new UserHealthOnboardingDetail();
 				for (BasicHealthQuestionDao dao : healthDetailsListDao) {
 					entOnBorading = new UserHealthOnboardingDetail();
-					entOnBorading.setUserHealthOnboardingId(new Integer(dao.getId()));
+					entOnBorading.setUserHealthOnboardingId(dao.getId());
 					entOnBorading.setOnboardingQuestionName(dao.getOnBoardingQuestionName());
 					entOnBorading.setOnboardingAnswerValue(dao.getAnswer());
+					EncryptedDecryptedObjectUtil.getEncryptedObject(entOnBorading, secretKey, secretIv,
+							isEncryptDecryptDatabaseData);
 					entOnBorading.setEndUser(user.get());
 
 					// Creating records for onboarding for the user
@@ -153,30 +168,43 @@ public class UserPersonalDetailsServiceImpl implements UserPersonalDetailsServic
 					sdkList.add(sdKinfoDao);
 				}
 
+				// fetching User Personal Details
+				UsersPersonalDetails perDetails = userPerDetailsRepository.getByUserId(new Long(userDao.getUserId()));
+				if (perDetails != null) {
+//				// Copying fetched values from DB to dao.
+					comUserPerDao = modelMapper.map(perDetails, CommonUserDetailsDao.class);
+					String userPerDetailsId=comUserPerDao.getUserPersonalDetailId();
+					decComUserPerDao=(CommonUserDetailsDao) EncryptedDecryptedObjectUtil.getDecryptedObject(comUserPerDao, secretKey, secretIv,
+							isEncryptDecryptDatabaseData);
+					decComUserPerDao.setUserPersonalDetailId(userPerDetailsId);
+					
+				}
+
 				// Setting fetched user Personal Data and SDK details.
-				resDao.setCommonUserDetailsDao(comUserPerDao);
+				resDao.setCommonUserDetailsDao(decComUserPerDao);
 				resDao.setSdkInfo(sdkList);
 				resDao.setEmailId(userDao.getEmailId());
 				resDao.setUserId(userDao.getUserId());
-				resDao.setEmailId(user.get().getUserEmail());
+//				resDao.setEmailId(userDao.getEmailId());
+				resDao.setPushNotify(user.get().getPushNotify());
 
 				result = true;
 
 				if (result) {
 					resDao.setMessage(accountCreationSuccess);
-					resDao.setSuccess(true);
+					resDao.setIsSuccess(Boolean.toString(true));
 				} else {
 					resDao.setMessage(accountCreationFailure);
-					resDao.setSuccess(false);
+					resDao.setIsSuccess(Boolean.toString(false));
 				}
 			} else {
 				resDao.setMessage(DupEmailId);
-				resDao.setSuccess(false);
+				resDao.setIsSuccess(Boolean.toString(false));
 			}
 			resDao.setUserId(userDao.getUserId().toString());
 		} catch (Exception e) {
 			resDao.setMessage(DupEmailId);
-			resDao.setSuccess(false);
+			resDao.setIsSuccess(Boolean.toString(false));
 			System.out.println(e);
 		}
 

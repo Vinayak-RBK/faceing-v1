@@ -2,44 +2,36 @@ package com.iss.dao;
 
 public class GuestDao {
 
-	private String email;
 	private String name;
 	private String gender;
 	private String dob;
-	private double weight;
-	private double height;
-	private boolean termCond;
-	private String image;
-	private Long userId;
+	private String weight;
+	private String height;
+//	private String termCond;
+//	private String image;
+	private String userId;
 	private String guestId;
+	private String scannedDate;
+	private String age;
 
 	public GuestDao() {
 		super();
 	}
 
-	public GuestDao(String email, String name, String gender, String dob, double weight, double height,
-			boolean termCond, String image, Long userId, String guestId) {
+	public GuestDao(String name, String gender, String dob, String weight, String height, 
+			String userId, String guestId, String scannedDate, String age) {
 		super();
-		this.email = email;
 		this.name = name;
 		this.gender = gender;
 		this.dob = dob;
 		this.weight = weight;
 		this.height = height;
-		this.termCond = termCond;
-		this.image = image;
+//		this.termCond = termCond;
+//		this.image = image;
 		this.userId = userId;
 		this.guestId = guestId;
-	}
-
-
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+		this.scannedDate = scannedDate;
+		this.age = age;
 	}
 
 	public String getName() {
@@ -66,46 +58,46 @@ public class GuestDao {
 		this.dob = dob;
 	}
 
-	public double getWeight() {
+	public String getWeight() {
 		return weight;
 	}
 
-	public void setWeight(double weight) {
+	public void setWeight(String weight) {
 		this.weight = weight;
 	}
 
-	public double getHeight() {
+	public String getHeight() {
 		return height;
 	}
 
-	public void setHeight(double height) {
+	public void setHeight(String height) {
 		this.height = height;
 	}
 
-	public boolean isTermCond() {
-		return termCond;
-	}
+//	public String getTermCond() {
+//		return termCond;
+//	}
+//
+//	public void setTermCond(String termCond) {
+//		this.termCond = termCond;
+//	}
+//
+//	public String getImage() {
+//		return image;
+//	}
+//
+//	public void setImage(String image) {
+//		this.image = image;
+//	}
 
-	public void setTermCond(boolean termCond) {
-		this.termCond = termCond;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	public String getGuestId() {
 		return guestId;
 	}
@@ -114,11 +106,27 @@ public class GuestDao {
 		this.guestId = guestId;
 	}
 
+	public String getScannedDate() {
+		return scannedDate;
+	}
+
+	public void setScannedDate(String scannedDate) {
+		this.scannedDate = scannedDate;
+	}
+
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
 	@Override
 	public String toString() {
-		return "GuestDao [email=" + email + ", name=" + name + ", gender=" + gender + ", dob=" + dob + ", weight="
-				+ weight + ", height=" + height + ", termCond=" + termCond + ", image=" + image + ", userId=" + userId
-				+ ", guestId=" + guestId + "]";
+		return "GuestDao [name=" + name + ", gender=" + gender + ", dob=" + dob + ", weight=" + weight + ", height="
+				+ height +", userId=" + userId + ", guestId=" + guestId
+				+ ", scannedDate=" + scannedDate + ", age=" + age + "]";
 	}
 
 }

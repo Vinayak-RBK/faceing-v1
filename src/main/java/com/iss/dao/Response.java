@@ -2,26 +2,28 @@ package com.iss.dao;
 
 public class Response {
 	
-	private boolean success;
+	private String success;
 	private String msg;
 	private String blockStatus;
+	private String userId;
 	
 	public Response() {
 		super();
 	}
 
-	public Response(boolean success, String msg, String blockStatus) {
+	public Response(String success, String msg, String blockStatus, String userId) {
 		super();
 		this.success = success;
 		this.msg = msg;
 		this.blockStatus = blockStatus;
+		this.userId = userId;
 	}
 
-	public boolean isSuccess() {
+	public String isSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(String success) {
 		this.success = success;
 	}
 
@@ -41,9 +43,18 @@ public class Response {
 		this.blockStatus = blockStatus;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
-		return "Response [success=" + success + ", msg=" + msg + ", blockStatus=" + blockStatus + "]";
+		return "Response [success=" + success + ", msg=" + msg + ", blockStatus=" + blockStatus + ", userId=" + userId
+				+ "]";
 	}
 
 }

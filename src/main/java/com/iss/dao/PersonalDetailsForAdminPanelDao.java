@@ -1,19 +1,33 @@
 package com.iss.dao;
 
-
 public class PersonalDetailsForAdminPanelDao {
-	
+
 	private String email;
 	private String password;
 	private String name;
 	private String gender;
 	private String dob;
-	private double weight;
-	private double height;
+	private String weight;
+	private String height;
 	private String image;
-	
+	private String age;
+
 	public PersonalDetailsForAdminPanelDao() {
 		super();
+	}
+
+	public PersonalDetailsForAdminPanelDao(String email, String password, String name, String gender, String dob,
+			String weight, String height, String image, String age) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.gender = gender;
+		this.dob = dob;
+		this.weight = weight;
+		this.height = height;
+		this.image = image;
+		this.age = age;
 	}
 
 	public String getEmail() {
@@ -56,19 +70,19 @@ public class PersonalDetailsForAdminPanelDao {
 		this.dob = dob;
 	}
 
-	public double getWeight() {
+	public String getWeight() {
 		return weight;
 	}
 
-	public void setWeight(double weight) {
+	public void setWeight(String weight) {
 		this.weight = weight;
 	}
 
-	public double getHeight() {
+	public String getHeight() {
 		return height;
 	}
 
-	public void setHeight(double height) {
+	public void setHeight(String height) {
 		this.height = height;
 	}
 
@@ -80,25 +94,19 @@ public class PersonalDetailsForAdminPanelDao {
 		this.image = image;
 	}
 
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
 	@Override
 	public String toString() {
-		return "PersonalDetailsDao [email=" + email + ", password=" + password + ", name=" + name + ", gender=" + gender
-				+ ", dob=" + dob + ", weight=" + weight + ", height=" + height + ", image=" + image + "]";
+		return "PersonalDetailsForAdminPanelDao [email=" + email + ", password=" + password + ", name=" + name
+				+ ", gender=" + gender + ", dob=" + dob + ", weight=" + weight + ", height=" + height + ", image="
+				+ image + ", age=" + age + "]";
 	}
 
-	public PersonalDetailsForAdminPanelDao(String email, String password, String name, String gender, String dob, double weight,
-			double height, String image) {
-		super();
-		this.email = email;
-		this.password = password;
-		this.name = name;
-		this.gender = gender;
-		this.dob = dob;
-		this.weight = weight;
-		this.height = height;
-		this.image = image;
-	}
-
-	
-	
 }

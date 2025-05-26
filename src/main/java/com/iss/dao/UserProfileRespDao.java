@@ -5,13 +5,13 @@ public class UserProfileRespDao {
 	private String userId;
 	private String imagePath;
 	private String message;
-	private boolean success;
+	private String success;
 
 	public UserProfileRespDao() {
 		super();
 	}
 
-	public UserProfileRespDao(String userId, String imagePath, String message, boolean success) {
+	public UserProfileRespDao(String userId, String imagePath, String message, String success) {
 		super();
 		this.userId = userId;
 		this.imagePath = imagePath;
@@ -43,11 +43,11 @@ public class UserProfileRespDao {
 		this.message = message;
 	}
 
-	public boolean isSuccess() {
+	public String isSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(String success) {
 		this.success = success;
 	}
 

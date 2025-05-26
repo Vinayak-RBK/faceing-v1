@@ -22,6 +22,8 @@ import com.iss.service.LoginUserService;
 import com.iss.service.UserPersonalDetailsService;
 import com.iss.service.UserService;
 import com.iss.util.CommonUtility;
+import com.iss.util.EncryptedDecryptedObjectUtil;
+import com.iss.validate.FieldValidadator;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -87,37 +89,60 @@ public class SignUpController {
 	@Value("${SOMETHING_WENT_WRONG}")
 	private String someThingWentWrong;
 
+	@Value("${SECRET_KEY}")
+	private String secretKey;
+
+	@Value("${SECRET_IV}")
+	private String secretIv;
+
+	@Value("${IS_ENCRYPT_DECRYPT_ENABLE_DATABASE_DATA}")
+	private boolean isEncryptDecryptDatabaseData;
+
+	@Value("${IS_ENCRYPT_DECRYPT_REQUEST_RESPONSE_DATA}")
+	private boolean isEncryptDecryptReqRespData;
+
 	ResponseDao _resDao = new ResponseDao();
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/signup")
-	public ResponseEntity<Map<String, Object>> sineup(@RequestBody UserDao userDao) {
+	public ResponseEntity<Map<String, Object>> signup(@RequestBody UserDao userDao) {
 		ResponseDao resDao = new ResponseDao();
 		Map<String, Object> respObj = new LinkedHashMap<String, Object>();
+		Map<String, Object> enRespObj = new LinkedHashMap<String, Object>();
+		UserDao decUserDao = new UserDao();
+//		boolean isEmailSent = false;
 
-		resDao = loginUserService.findByEmailIdForSignUp(userDao, resDao);
 		try {
-			if (resDao.isOnBoarded() && resDao.isOTPVerified()) {
+
+			// Decrypting the UI Request here
+			decUserDao = (UserDao) EncryptedDecryptedObjectUtil.getDecryptedObject(userDao, secretKey, secretIv,
+					isEncryptDecryptReqRespData);
+
+			// Searching the User Email Id here
+			resDao = loginUserService.findByEmailIdForSignUp(decUserDao, resDao);
+			if (Boolean.parseBoolean(resDao.getIsOnBoarded()) && Boolean.parseBoolean(resDao.getIsOTPVerified())) {
 
 				respObj.put("message", accountExists);
-				respObj.put("success", resDao.isSuccess());
+				respObj.put("success", resDao.getIsSuccess());
 
-//				resDao.setMessage(accountExists);
-//				resDao.setSuccess(false);
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
 				logger.info("User Signup for Email ID :{} - {}", resDao.getEmailId(), resDao.getMessage());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 			} else {
 
 				// Validate Confirm Password
-				if (!userDao.getPassword().equals(userDao.getConfirmPassword())) {
-					resDao.setSuccess(false);
+				if (!decUserDao.getPassword().equals(decUserDao.getConfirmPassword())) {
+					resDao.setIsSuccess(Boolean.toString(false));
 					resDao.setMessage(passwordMismatch);
 
 					respObj.put("message", passwordMismatch);
-					respObj.put("success", resDao.isSuccess());
+					respObj.put("success", resDao.getIsSuccess());
 
-//					return ResponseEntity.badRequest().body(resDao);
+					enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj,
+							secretKey, secretIv, isEncryptDecryptReqRespData);
 					logger.info("For :{} - {}", resDao.getEmailId(), resDao.getMessage());
-					return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+					return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 				}
 				// Generate & Send OTP
 				try {
@@ -134,18 +159,24 @@ public class SignUpController {
 //						return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
 //					}
 
-					if (resDao.isSuccess()) {
-						_resDao = loginUserService.saveUserWithOTP(userDao, dateTimeFormat, true);
+					if (Boolean.parseBoolean(resDao.getIsSuccess())) {
+						_resDao = loginUserService.saveUserWithOTP(decUserDao, dateTimeFormat, true);
 
 					} else {
-						_resDao = loginUserService.saveUserWithOTP(userDao, dateTimeFormat, false);
+						_resDao = loginUserService.saveUserWithOTP(decUserDao, dateTimeFormat, false);
 					}
 
-//					otpUtil.sendOtpToEmail(userDao.getEmailId(), _resDao.getOtp());
+					// Sending OTP to an email
+//					isEmailSent = otpUtil.sendOtpToEmail(userDao.getEmailId(), _resDao.getOtp());
+					
+//					if(!isEmailSent)
+//					{
+//						resDao.setMessage("Unable to send an Email");
+//					}
 
-					if (_resDao.isSuccess()) {
+					if (Boolean.parseBoolean(_resDao.getIsSuccess())) {
 						resDao.setMessage(emailOTP);
-						resDao.setSuccess(true);
+						resDao.setIsSuccess(Boolean.toString(true));
 					} else {
 						resDao.setMessage(emailVerifyFail);
 					}
@@ -158,135 +189,184 @@ public class SignUpController {
 					respObj.put("otp", resDao.getOtp());
 					respObj.put("userId", resDao.getUserId());
 					respObj.put("emailId", resDao.getEmailId());
-//					respObj.put("blocked", resDao.isBlocked());
-//					respObj.put("onBoarded", resDao.isOnBoarded());
-//					respObj.put("otpverified", resDao.isOTPVerified());
-					respObj.put("success", resDao.isSuccess());
+					respObj.put("success", resDao.getIsSuccess());
+
+					enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj,
+							secretKey, secretIv, isEncryptDecryptReqRespData);
 
 				} catch (Exception e) {
-					System.out.println(e);
-//					resDao.setSuccess(false);
-//					resDao.setMessage(accountCreationFailure);
 
 					respObj.put("message", someThingWentWrong);
 					respObj.put("success", false);
-					
-					logger.info("Some thing went wrong while Signing In for Email ID : {} - {}", userDao.getEmailId(), e);
-					return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+
+					enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj,
+							secretKey, secretIv, isEncryptDecryptReqRespData);
+					logger.info("Some thing went wrong while Signing In for Email ID : {} - {}",
+							decUserDao.getEmailId(), e);
+					return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 				}
 
 			}
 		} catch (Exception e) {
-			System.out.println(e);
-
 			respObj.put("message", someThingWentWrong);
 			respObj.put("success", false);
 
-			logger.info("Some thing went wrong while Signing In for Email ID : {} - {}", userDao.getEmailId(), e);
-			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+			try {
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+			} catch (Exception e1) {
+				logger.error("Exception occurred while encrypting the response- {}", e1);
+			}
+
+			logger.error("Exception occurred while Signing In for Email ID : {} - {}", decUserDao.getEmailId(), e);
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.BAD_REQUEST);
 		}
+
 		logger.info("For :{} - {}", resDao.getEmailId(), resDao.getMessage());
-		return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/verifySignupOtp")
 	public ResponseEntity<Map<String, Object>> verifyOtpForSignup(@RequestBody UserDao userDao,
 			HttpServletResponse response) {
 		ResponseDao resDao = new ResponseDao();
 		HttpHeaders header = new HttpHeaders();
 		Map<String, Object> respObj = new LinkedHashMap<String, Object>();
-		try {
-			logger.info("Verifying OTP for email: {}", userDao.getEmailId());
-			resDao = loginUserService.verifyOtpForSignup(userDao, dateTimeFormat);
+		Map<String, Object> enRespObj = new LinkedHashMap<String, Object>();
+		UserDao decUserDao = new UserDao();
 
-			if (resDao.isSuccess()) {
-				resDao.setOTPVerified(true);
+		try {
+			// Decrypting the UI Request here
+			decUserDao = (UserDao) EncryptedDecryptedObjectUtil.getDecryptedObject(userDao, secretKey, secretIv,
+					isEncryptDecryptReqRespData);
+			logger.info("Verifying OTP for email: {}", decUserDao.getEmailId());
+
+			// Verifying the OTP here
+			resDao = loginUserService.verifyOtpForSignup(decUserDao, dateTimeFormat);
+
+			if (Boolean.parseBoolean(resDao.getIsSuccess())) {
+				resDao.setIsOTPVerified(Boolean.toString(true));
 
 				// generating token
-				header = loginUserService.generateToken(_resDao.getUserId(), _resDao.getEmailId(), dateTimeFormat);
+				header = loginUserService.generateToken(resDao.getUserId(), resDao.getEmailId(), dateTimeFormat);
 
 				response.setHeader("accessToken", header.getAccessToken());
-				response.setHeader("refreshToken", header.getRefreshToken());
-
-//				response.addCookie(new Cookie("accessToken", header.getAccessToken()));
-//				response.addCookie(new Cookie("refreshToken", header.getRefreshToken()));
 
 				respObj.put("message", resDao.getMessage());
 				respObj.put("userId", resDao.getUserId());
 				respObj.put("emailId", resDao.getEmailId());
-//				respObj.put("otpverified", resDao.isOTPVerified());
-//				respObj.put("blocked", resDao.isBlocked());
-//				respObj.put("onBoarded", resDao.isOnBoarded());
-				respObj.put("success", resDao.isSuccess());
+				respObj.put("success", resDao.getIsSuccess());
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
 
-				logger.info("Verifying OTP for email: {}", userDao.getEmailId());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
+				logger.info("Verifying OTP for email: {}", decUserDao.getEmailId());
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 			} else {
 				respObj.put("message", resDao.getMessage());
-//				respObj.put("userId", resDao.getUserId());
-//				respObj.put("emailId", resDao.getEmailId());
-//				respObj.put("otpverified", resDao.isOTPVerified());
-//				respObj.put("blocked", resDao.isBlocked());
-//				respObj.put("onBoarded", resDao.isOnBoarded());
-				respObj.put("success", resDao.isSuccess());
+				respObj.put("success", resDao.getIsSuccess());
 
-				logger.info("Verifying OTP for email: {}", userDao.getEmailId());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.NOT_FOUND);
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+
+				logger.info("Verifying OTP for email: {}", decUserDao.getEmailId());
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			respObj.put("message", someThingWentWrong);
-			respObj.put("success", resDao.isSuccess());
-			logger.info("Some thing went wrong while verifying SignIn OTP for Email ID : {} - {}", userDao.getEmailId(),
-					e);
-			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+			respObj.put("success", resDao.getIsSuccess());
+
+			try {
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+			} catch (Exception e1) {
+				logger.error("Exception occurred while encrypting the response- {}", e1);
+			}
+
+			logger.error("Exception occurred while verifying SignIn OTP for Email ID : {} - {}",
+					decUserDao.getEmailId(), e);
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.BAD_REQUEST);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/continueSignup")
-	public ResponseEntity<Map<String, Object>> continueSinupUser(
-			@RequestBody CompleteDetailsDao compDetailsDao) {
+	public ResponseEntity<Map<String, Object>> continueSinupUser(@RequestBody CompleteDetailsDao compDetailsDao) {
 		ResponseDao resDao = new ResponseDao();
 		Map<String, Object> respObj = new LinkedHashMap<String, Object>();
+		Map<String, Object> enRespObj = new LinkedHashMap<String, Object>();
+		CompleteDetailsDao decCompDetailsDao = new CompleteDetailsDao();
+		Map<String, String> valFields = new LinkedHashMap<String, String>();
+//		boolean isEmailSent = false;
 
 		try {
-			resDao = userPersonalDetailsService.insertUserPersonalData(compDetailsDao.getUserDao(),
-					compDetailsDao.getPerDetailsDao(), compDetailsDao.getHelthDetailsListDao(), dateTimeFormat);
 
-			if (resDao.isSuccess()) {
+			// validation for the fields
+			valFields = FieldValidadator.validateFields(compDetailsDao.getPerDetailsDao());
 
+			String res = valFields.get("success");
+			if (!Boolean.parseBoolean(res)) {
+
+				respObj.put("msg", valFields.get("msg"));
+				respObj.put("success", Boolean.parseBoolean(res));
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
+			}
+
+			decCompDetailsDao = (CompleteDetailsDao) EncryptedDecryptedObjectUtil.getDecryptedObject(compDetailsDao,
+					secretKey, secretIv, isEncryptDecryptReqRespData);
+
+			resDao = userPersonalDetailsService.insertUserPersonalData(decCompDetailsDao.getUserDao(),
+					decCompDetailsDao.getPerDetailsDao(), decCompDetailsDao.getHelthDetailsListDao(), dateTimeFormat);
+
+			if (Boolean.parseBoolean(resDao.getIsSuccess())) {
+				// sending created profile data to an email
+//				isEmailSent=otpUtil.sendOnboardingSuccessToEmail(compDetailsDao.getUserDao().getEmailId());
+
+//				if (!isEmailSent) {
+//					resDao.setMessage("Unable to send an Email");
+//				}
+				
 				respObj.put("message", resDao.getMessage());
 				respObj.put("userId", resDao.getUserId());
 				respObj.put("emailId", resDao.getEmailId());
-				respObj.put("sdkInfo", resDao.getSdkInfo());
+//				respObj.put("sdkInfo", resDao.getSdkInfo());
 				respObj.put("commonUserDetailsDao", resDao.getCommonUserDetailsDao());
-//				respObj.put("otpverified", resDao.getEmailId());
-//				respObj.put("blocked", resDao.getEmailId());
-//				respObj.put("onBoarded", resDao.getEmailId());
-				respObj.put("success", resDao.isSuccess());
+				respObj.put("success", resDao.getIsSuccess());
+				
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
 
-				logger.info("Creating account : {}", compDetailsDao.getUserDao().getEmailId());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
+				logger.info("Creating account : {}", decCompDetailsDao.getUserDao().getEmailId());
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 			} else {
 
 				respObj.put("message", resDao.getMessage());
-//				respObj.put("userId", resDao.getUserId());
-//				respObj.put("emailId", resDao.getEmailId());
-//				respObj.put("sdkInfo", resDao.getEmailId());
-//				respObj.put("commonUserDetailsDao", resDao.getEmailId());
-				respObj.put("success", resDao.isSuccess());
+				respObj.put("success", resDao.getIsSuccess());
 
-				logger.info("Creating account : {}", compDetailsDao.getUserDao().getEmailId());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+
+				logger.info("Creating account : {}", decCompDetailsDao.getUserDao().getEmailId());
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 
 			respObj.put("message", someThingWentWrong);
 			respObj.put("success", false);
 
-			logger.info("Some thing went wrong after verifying SignIn OTP for Email ID : {} - {}",
-					compDetailsDao.getUserDao().getEmailId(), e);
-			System.out.println(e);
-			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+			try {
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+			} catch (Exception e1) {
+				logger.error("Exception occurred while encrypting the response- {}", e1);
+			}
+
+			logger.error("Exception occurred while verifying SignIn OTP for Email ID : {} - {}",
+					decCompDetailsDao.getUserDao().getEmailId(), e);
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.BAD_REQUEST);
 		}
 
 	}

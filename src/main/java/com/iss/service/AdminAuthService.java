@@ -10,13 +10,13 @@ import com.iss.dao.LegalSettingsRespDao;
 @Service
 public interface AdminAuthService {
 
-	public AdminResponseDao adminLoginService(AdminUserDao dao, String dateTimeFormat);
+	public AdminResponseDao adminLoginService(AdminUserDao dao, String dateTimeFormat) throws Exception;
 
-	public AdminResponseDao adminForgetPasswordService(AdminUserDao dao, String currDatetime);
+	public AdminResponseDao adminForgetPasswordService(AdminUserDao dao, String currDatetime) throws Exception;
 
-	public AdminResponseDao adminVerifyForgetPasswordService(AdminUserDao dao, String currDatetime);
+	public AdminResponseDao adminVerifyForgetPasswordService(AdminUserDao dao, String currDatetime) throws Exception;
 
-	public AdminResponseDao resetAdminPasswordService(AdminUserDao dao, String currDatetime);
+	public AdminResponseDao resetAdminPasswordService(AdminUserDao dao, String currDatetime) throws Exception;
 
 	public int findByEmailIdForAdminSignUp(AdminUserDao dao);
 
@@ -28,6 +28,8 @@ public interface AdminAuthService {
 
 	public LegalSettingsRespDao updateLegalSettings(LegalSettingsDao dao, String dateTimeFormat);
 
-	public void checkAndResetLoginAttemptsForAdmin(String dateTimeFormat);
+	public void checkAndResetLoginAttemptsForAdmin(String dateTimeFormat) throws Exception;
+	
+	public void resetBlockedUserSiteService(String dateTimeFormat) throws Exception;
 
 }

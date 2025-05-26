@@ -9,14 +9,14 @@ public class AdminUserPersonalDetailsDao {
 	private String gender;
 	private String height;
 	private String weight;
-	private int age;
+	private String age;
 
 	public AdminUserPersonalDetailsDao() {
 		super();
 	}
 
 	public AdminUserPersonalDetailsDao(String userId, String name, String email, String dob, String gender,
-			String height, String weight, int age) {
+			String height, String weight, String age) {
 		super();
 		this.userId = userId;
 		this.name = name;
@@ -84,11 +84,11 @@ public class AdminUserPersonalDetailsDao {
 		this.weight = weight;
 	}
 
-	public int getAge() {
+	public String getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(String age) {
 		this.age = age;
 	}
 

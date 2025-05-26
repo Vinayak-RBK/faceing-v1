@@ -3,8 +3,6 @@ package com.iss.controller;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,7 @@ import com.iss.dao.ResponseDao;
 import com.iss.dao.UserDao;
 import com.iss.service.LoginUserService;
 import com.iss.util.CommonUtility;
-import com.iss.util.EncryptDecryptData;
+import com.iss.util.EncryptedDecryptedObjectUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -65,145 +63,219 @@ public class ForgotPasswordController {
 
 	@Value("${DATE_TIME_FORMAT}")
 	private String dateTimeFormat;
-	
+
 	@Value("${SOMETHING_WENT_WRONG}")
 	private String someThingWentWrong;
 
+	@Value("${SECRET_KEY}")
+	private String secretKey;
+
+	@Value("${SECRET_IV}")
+	private String secretIv;
+
+	@Value("${IS_ENCRYPT_DECRYPT_ENABLE_DATABASE_DATA}")
+	private boolean isEncryptDecryptDatabaseData;
+
+	@Value("${IS_ENCRYPT_DECRYPT_REQUEST_RESPONSE_DATA}")
+	private boolean isEncryptDecryptReqRespData;
+
+	@SuppressWarnings("unchecked")
 	@PostMapping("/forgotPassword")
-	public ResponseEntity<Map<String, Object>> checkEmailExists(@RequestBody UserDao userDao,HttpServletResponse response) {
-		Map<String, Object> respObj=new LinkedHashMap<String, Object>();
+	public ResponseEntity<Map<String, Object>> checkEmailExists(@RequestBody UserDao userDao,
+			HttpServletResponse response) {
+		Map<String, Object> respObj = new LinkedHashMap<String, Object>();
+		Map<String, Object> enRespObj = new LinkedHashMap<String, Object>();
+
 		ResponseDao resDao = new ResponseDao();
 		String newOtp = "";
-		SecretKey secretKey = null;
+		UserDao enUserDao = new UserDao();
+//		boolean isEmailSent = false;
 
 		logger.info("Processing forgot password request for email: {}", userDao.getEmailId());
 		try {
-			secretKey = EncryptDecryptData.generateKey();
-			resDao = loginUserService.findByEmailId(userDao, false, dateTimeFormat, secretKey);
-			if (!resDao.isSuccess()) {
+
+			enUserDao = (UserDao) EncryptedDecryptedObjectUtil.getEncryptedObject(userDao, secretKey, secretIv,
+					isEncryptDecryptReqRespData);
+
+			resDao = loginUserService.findByEmailId(enUserDao, false, dateTimeFormat);
+			if (!Boolean.parseBoolean(resDao.getIsSuccess())) {
 				respObj.put("message", resDao.getMessage());
-				respObj.put("success", resDao.isSuccess());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
+				respObj.put("success", resDao.getIsSuccess());
+
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 			}
 
 			// Store or retrieve existing OTP
 			newOtp = loginUserService.storeOtpForForgotPassword(userDao, dateTimeFormat);
 			logger.info("Stored OTP: {} for email: {}", newOtp, userDao.getEmailId());
 
-//			otpUtil.sendOtpToEmail(userDao.getEmailId(), newOtp);
-			
+			// Sending OTP to an email
+//			isEmailSent = otpUtil.sendOtpToEmail(userDao.getEmailId(), newOtp);
+
+//			if (!isEmailSent) {
+//				resDao.setMessage("Unable to send an Email");
+//			}
+
 			respObj.put("message", resDao.getMessage());
 			respObj.put("otp", newOtp);
 			respObj.put("userId", resDao.getUserId());
 			respObj.put("emailId", resDao.getEmailId());
-			respObj.put("success", resDao.isSuccess());
-			
+			respObj.put("success", resDao.getIsSuccess());
+
+			enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+					secretIv, isEncryptDecryptReqRespData);
+
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
+
 		} catch (Exception e) {
-			
+
 			respObj.put("message", someThingWentWrong);
 			respObj.put("userId", userDao.getUserId());
 			respObj.put("emailId", userDao.getEmailId());
 			respObj.put("success", false);
-			
-			logger.info("Some thing went wrong while checking Email ID : {} - {}", userDao.getEmailId(), e);
-			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+
+			try {
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+			} catch (Exception e1) {
+				logger.error("Error occured while encrypting the response- {}", e1);
+			}
+
+			logger.error("Exception occurred while checking Email ID : {} - {}", userDao.getEmailId(), e);
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/verifyForGetPasOtp")
 	public ResponseEntity<Map<String, Object>> verifyOtp(@RequestBody UserDao userDao) {
 		ResponseDao resDao = new ResponseDao();
-		Map<String, Object> respObj=new LinkedHashMap<String, Object>();
+		Map<String, Object> respObj = new LinkedHashMap<String, Object>();
+		Map<String, Object> enRespObj = new LinkedHashMap<String, Object>();
+		UserDao decUserDao = new UserDao();
 
 		logger.info("Verifying OTP for email: {}", userDao.getEmailId());
 		try {
-			
-			resDao = loginUserService.verifyOtpForSignup(userDao, dateTimeFormat);
-			
-			if(resDao.isSuccess())
-			{
-				respObj.put("message", resDao.getMessage());
-//				respObj.put("otp", newOtp);
+			// Decrypting the UI Request Here
+			decUserDao = (UserDao) EncryptedDecryptedObjectUtil.getEncryptedObject(userDao, secretKey, secretIv,
+					isEncryptDecryptReqRespData);
+			// Verifying the OTP here
+			resDao = loginUserService.verifyOtpForSignup(decUserDao, dateTimeFormat);
+
+			if (Boolean.parseBoolean(resDao.getIsSuccess())) {
 				respObj.put("userId", resDao.getUserId());
 				respObj.put("emailId", resDao.getEmailId());
-				respObj.put("success", resDao.isSuccess());
-				
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
-			}
-			else
-			{
-				respObj.put("message", resDao.getMessage());
-//				respObj.put("otp", newOtp);
+
+			} else {
 				respObj.put("userId", userDao.getUserId());
 				respObj.put("emailId", userDao.getEmailId());
-				respObj.put("success", resDao.isSuccess());
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.NOT_FOUND);
+
 			}
-			
+
+			respObj.put("message", resDao.getMessage());
+			respObj.put("success", resDao.getIsSuccess());
+
+			enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+					secretIv, isEncryptDecryptReqRespData);
+
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
 
 		} catch (Exception e) {
-			
+
 			respObj.put("message", someThingWentWrong);
-//			respObj.put("otp", newOtp);
 			respObj.put("userId", userDao.getUserId());
 			respObj.put("emailId", userDao.getEmailId());
 			respObj.put("success", false);
-			logger.info("Some thing went wrong while Verifying Otp for Email ID : {} - {}", userDao.getEmailId(), e);
-			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
+
+			try {
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+			} catch (Exception e1) {
+				logger.error("Error occured while encrypting the response- {}", e1);
+			}
+
+			logger.error("Exception occurred while Verifying Otp for Email ID : {} - {}", userDao.getEmailId(), e);
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.BAD_REQUEST);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/resetPassword")
 	public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody UserDao userDao) {
 		ResponseDao resDao = new ResponseDao();
-		Map<String, Object> respObj=new LinkedHashMap<String, Object>();
+		Map<String, Object> respObj = new LinkedHashMap<String, Object>();
+		Map<String, Object> enRespObj = new LinkedHashMap<String, Object>();
+		UserDao decUserDao = new UserDao();
 
-		if (!userDao.getPassword().equals(userDao.getConfirmPassword())) {
-//			resDao.setMessage(passwordMismatch);
-//			resDao.setSuccess(false);
-			
-			respObj.put("message", passwordMismatch);
-//			respObj.put("otp", newOtp);
-			respObj.put("userId", userDao.getUserId());
-			respObj.put("emailId", userDao.getEmailId());
-			respObj.put("success", false);
-			
-			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.NOT_FOUND);
-		}
+		logger.info("Received request from UI : {}", userDao);
+
 		try {
+			// Decrypting the UI Request here
+			decUserDao = (UserDao) EncryptedDecryptedObjectUtil.getEncryptedObject(userDao, secretKey, secretIv,
+					isEncryptDecryptReqRespData);
 
+			logger.info("Received request from UI after decryption: {}", decUserDao);
+
+			// Checking the password and confirm password both are same or not
+			if (!decUserDao.getPassword().equals(decUserDao.getConfirmPassword())) {
+
+				respObj.put("message", passwordMismatch);
+				respObj.put("userId", userDao.getUserId());
+				respObj.put("emailId", userDao.getEmailId());
+				respObj.put("success", false);
+
+				logger.info("Response to UI before encryption: {}", respObj);
+
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+
+				logger.info("Response to UI after encryption: {}", enRespObj);
+
+				return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
+			}
+
+			// Updating the password here
 			resDao = loginUserService.updatePassword(userDao, dateTimeFormat);
 			resDao.setUserId(userDao.getUserId());
-			if (resDao.isSuccess()) {
-				
-				respObj.put("message", resDao.getMessage());
-//				respObj.put("otp", newOtp);
+
+			if (Boolean.parseBoolean(resDao.getIsSuccess())) {
+
 				respObj.put("userId", userDao.getUserId());
 				respObj.put("emailId", userDao.getEmailId());
-				respObj.put("success", resDao.isSuccess());
-				
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.OK);
+
 			} else {
-				
-				respObj.put("message", resDao.getMessage());
-//				respObj.put("otp", newOtp);
+
 				respObj.put("userId", userDao.getUserId());
 				respObj.put("emailId", userDao.getEmailId());
-				respObj.put("success", resDao.isSuccess());
-				
-				return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+
+			respObj.put("message", resDao.getMessage());
+			respObj.put("success", resDao.getIsSuccess());
+
+			enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(respObj, secretKey,
+					secretIv, isEncryptDecryptReqRespData);
+
+			return new ResponseEntity<Map<String, Object>>(enRespObj, HttpStatus.OK);
+
 		} catch (Exception e) {
-			
+
 			respObj.put("message", someThingWentWrong);
 			respObj.put("userId", userDao.getUserId());
 			respObj.put("emailId", userDao.getEmailId());
 			respObj.put("success", false);
-			
-			logger.info("Some thing went wrong while resetting the password for Email ID : {} - {}",
-					userDao.getEmailId(), e);
+
+			try {
+				enRespObj = (Map<String, Object>) EncryptedDecryptedObjectUtil.getEncryptedString(enRespObj, secretKey,
+						secretIv, isEncryptDecryptReqRespData);
+			} catch (Exception e1) {
+				logger.error("Exception occurred while encrypting the response- {}", e1);
+			}
+
+			logger.error("Exception occurred while resetting the password for Email ID : {} - {}", userDao.getEmailId(),
+					e);
 			return new ResponseEntity<Map<String, Object>>(respObj, HttpStatus.BAD_REQUEST);
 		}
 

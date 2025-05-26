@@ -3,22 +3,22 @@ package com.iss.dao;
 import java.math.BigDecimal;
 
 public class CommonUserDetailsDao {
-	private Integer userId;
+	private String userId;
 	private String userEmail;
-	private Integer userPersonalDetailId;
+	private String userPersonalDetailId;
 	private String userName;
 	private String userGender;
 	private String userDOB;
-	private BigDecimal userWeight;
-	private BigDecimal userHeight;
+	private String userWeight;
+	private String userHeight;
 	private String userImage;
 		
 	public CommonUserDetailsDao() {
 		super();
 	}
 
-	public CommonUserDetailsDao(Integer userId, String userEmail, Integer userPersonalDetailId, String userName,
-			String userGender, String userDOB, BigDecimal userWeight, BigDecimal userHeight, String userImage) {
+	public CommonUserDetailsDao(String userId, String userEmail, String userPersonalDetailId, String userName,
+			String userGender, String userDOB, String userWeight, String userHeight, String userImage) {
 		super();
 		this.userId = userId;
 		this.userEmail = userEmail;
@@ -31,11 +31,11 @@ public class CommonUserDetailsDao {
 		this.userImage = userImage;
 	}
 
-	public Integer getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -47,11 +47,11 @@ public class CommonUserDetailsDao {
 		this.userEmail = userEmail;
 	}
 
-	public Integer getUserPersonalDetailId() {
+	public String getUserPersonalDetailId() {
 		return userPersonalDetailId;
 	}
 
-	public void setUserPersonalDetailId(Integer userPersonalDetailId) {
+	public void setUserPersonalDetailId(String userPersonalDetailId) {
 		this.userPersonalDetailId = userPersonalDetailId;
 	}
 
@@ -79,19 +79,19 @@ public class CommonUserDetailsDao {
 		this.userDOB = userDOB;
 	}
 
-	public BigDecimal getUserWeight() {
+	public String getUserWeight() {
 		return userWeight;
 	}
 
-	public void setUserWeight(BigDecimal userWeight) {
+	public void setUserWeight(String userWeight) {
 		this.userWeight = userWeight;
 	}
 
-	public BigDecimal getUserHeight() {
+	public String getUserHeight() {
 		return userHeight;
 	}
 
-	public void setUserHeight(BigDecimal userHeight) {
+	public void setUserHeight(String userHeight) {
 		this.userHeight = userHeight;
 	}
 

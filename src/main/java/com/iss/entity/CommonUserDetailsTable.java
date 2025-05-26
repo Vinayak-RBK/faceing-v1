@@ -1,7 +1,5 @@
 package com.iss.entity;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,44 +10,57 @@ import jakarta.persistence.Table;
 public class CommonUserDetailsTable {
 
 	@Id
-	@Column(name = "user_id", length = 10, unique = true)
+	@Column(name = "user_id", unique = true, length = 255)
 	private String userId;
 
-	@Column(name = "user_email_id", length = 50, nullable = false, unique = true)
+	@Column(name = "user_email_id", unique = true, columnDefinition = "TEXT")
 	private String userEmail;
 
-	@Column(name = "user_personal_detail_id", length = 10, unique = true)
-	private Integer userPersonalDetailId;
+	@Column(name = "user_personal_detail_id", unique = true, columnDefinition = "TEXT")
+	private String userPersonalDetailId;
 
-	@Column(name = "user_name", nullable = false, length = 40)
+	@Column(name = "user_name", columnDefinition = "TEXT")
 	private String userName;
 
-	@Column(name = "user_gender", nullable = false, length = 10)
+	@Column(name = "user_gender", columnDefinition = "TEXT")
 	private String userGender;
 
-	@Column(name = "user_dob")
+	@Column(name = "user_dob", columnDefinition = "TEXT")
 	private String userDOB;
 
-	@Column(name = "user_weight", precision = 5, scale = 2, nullable = true)
-	private BigDecimal userWeight;
+	@Column(name = "user_weight", columnDefinition = "TEXT")
+	private String userWeight;
 
-	@Column(name = "user_height", precision = 5, scale = 2, nullable = true)
-	private BigDecimal userHeight;
+	@Column(name = "user_height", columnDefinition = "TEXT")
+	private String userHeight;
 
-	@Column(name = "user_image", length = 100, nullable = true)
+	@Column(name = "user_image", columnDefinition = "TEXT")
 	private String userImage;
 
-	@Column(name = "is_Blocked", columnDefinition = "TINYINT(1)")
-	private Boolean isBlocked;
+	@Column(name = "is_Blocked", columnDefinition = "TEXT")
+	private String isBlocked;
 
-	public CommonUserDetailsTable(Boolean isBlocked) {
+	@Column(name = "sdk_type", columnDefinition = "TEXT")
+	private String sDKType;
+
+	@Column(name = "user_password", columnDefinition = "TEXT")
+	private String password;
+
+	@Column(name = "job_role", columnDefinition = "TEXT")
+	private String jobRole;
+
+	public CommonUserDetailsTable() {
+		super();
+	}
+
+	public CommonUserDetailsTable(String isBlocked) {
 		super();
 		this.isBlocked = isBlocked;
 	}
 
-	public CommonUserDetailsTable(String userId, String userEmail, Integer userPersonalDetailId, String userName,
-			String userGender, String userDOB, BigDecimal userWeight, BigDecimal userHeight, String userImage,
-			Boolean isBlocked) {
+	public CommonUserDetailsTable(String userId, String userEmail, String userPersonalDetailId, String userName,
+			String userGender, String userDOB, String userWeight, String userHeight, String userImage, String isBlocked,
+			String sDKType, String password, String jobRole) {
 		super();
 		this.userId = userId;
 		this.userEmail = userEmail;
@@ -61,18 +72,9 @@ public class CommonUserDetailsTable {
 		this.userHeight = userHeight;
 		this.userImage = userImage;
 		this.isBlocked = isBlocked;
-	}
-
-	public Boolean getIsBlocked() {
-		return isBlocked;
-	}
-
-	public void setIsBlocked(Boolean isBlocked) {
-		this.isBlocked = isBlocked;
-	}
-
-	public CommonUserDetailsTable() {
-		super();
+		this.sDKType = sDKType;
+		this.password = password;
+		this.jobRole = jobRole;
 	}
 
 	public String getUserId() {
@@ -91,11 +93,11 @@ public class CommonUserDetailsTable {
 		this.userEmail = userEmail;
 	}
 
-	public Integer getUserPersonalDetailId() {
+	public String getUserPersonalDetailId() {
 		return userPersonalDetailId;
 	}
 
-	public void setUserPersonalDetailId(Integer userPersonalDetailId) {
+	public void setUserPersonalDetailId(String userPersonalDetailId) {
 		this.userPersonalDetailId = userPersonalDetailId;
 	}
 
@@ -123,19 +125,19 @@ public class CommonUserDetailsTable {
 		this.userDOB = userDOB;
 	}
 
-	public BigDecimal getUserWeight() {
+	public String getUserWeight() {
 		return userWeight;
 	}
 
-	public void setUserWeight(BigDecimal userWeight) {
+	public void setUserWeight(String userWeight) {
 		this.userWeight = userWeight;
 	}
 
-	public BigDecimal getUserHeight() {
+	public String getUserHeight() {
 		return userHeight;
 	}
 
-	public void setUserHeight(BigDecimal userHeight) {
+	public void setUserHeight(String userHeight) {
 		this.userHeight = userHeight;
 	}
 
@@ -147,12 +149,45 @@ public class CommonUserDetailsTable {
 		this.userImage = userImage;
 	}
 
+	public String getIsBlocked() {
+		return isBlocked;
+	}
+
+	public void setIsBlocked(String isBlocked) {
+		this.isBlocked = isBlocked;
+	}
+
+	public String getsDKType() {
+		return sDKType;
+	}
+
+	public void setsDKType(String sDKType) {
+		this.sDKType = sDKType;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getJobRole() {
+		return jobRole;
+	}
+
+	public void setJobRole(String jobRole) {
+		this.jobRole = jobRole;
+	}
+
 	@Override
 	public String toString() {
 		return "CommonUserDetailsTable [userId=" + userId + ", userEmail=" + userEmail + ", userPersonalDetailId="
 				+ userPersonalDetailId + ", userName=" + userName + ", userGender=" + userGender + ", userDOB="
 				+ userDOB + ", userWeight=" + userWeight + ", userHeight=" + userHeight + ", userImage=" + userImage
-				+ ", isBlocked=" + isBlocked + "]";
+				+ ", isBlocked=" + isBlocked + ", sDKType=" + sDKType + ", password=" + password + ", jobRole="
+				+ jobRole + "]";
 	}
 
 }

@@ -3,16 +3,16 @@ package com.iss.dao;
 import java.util.List;
 
 public class LegalSettingsRespDao {
-	
+
 	private String msg;
-	private boolean success;
+	private String success;
 	private List<LegalSettingsDao> legalLists;
-	
+
 	public LegalSettingsRespDao() {
 		super();
 	}
 
-	public LegalSettingsRespDao(String msg, boolean success, List<LegalSettingsDao> legalLists) {
+	public LegalSettingsRespDao(String msg, String success, List<LegalSettingsDao> legalLists) {
 		super();
 		this.msg = msg;
 		this.success = success;
@@ -27,11 +27,11 @@ public class LegalSettingsRespDao {
 		this.msg = msg;
 	}
 
-	public boolean isSuccess() {
+	public String getSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(String success) {
 		this.success = success;
 	}
 

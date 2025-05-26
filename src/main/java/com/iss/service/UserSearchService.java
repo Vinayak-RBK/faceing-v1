@@ -1,14 +1,14 @@
 package com.iss.service;
 
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.iss.dao.AdminOperationResponseDao;
 import com.iss.dao.AdminUserPersonalDetailsDao;
+import com.iss.dao.PagerRequestDao;
+import com.iss.dao.PagerResponseDao;
 import com.iss.dao.Response;
 import com.iss.dao.UserPersonalAndHealthDetailsDao;
-import com.iss.dao.UserSearchResponseDao;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public interface UserSearchService {
 
-	public List<UserSearchResponseDao> getAllUserDetails(String dateTimeFormat);
+	public PagerResponseDao getAllUserDetails(String dateTimeFormat,PagerRequestDao pagerDao);
 
 	public Response banByUserId(Long userId);
 	

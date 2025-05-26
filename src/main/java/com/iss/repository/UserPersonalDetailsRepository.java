@@ -23,14 +23,14 @@ public interface UserPersonalDetailsRepository extends JpaRepository<UsersPerson
 //			Date registDate, String registPname, String uerCurHealthCond, String userCrMed, Date dob,
 //			String userDrinkAlcohol, String emailId, String gender, String userImagePath, String userName,
 //			double height, double weight);
-	
+
 	@Query(value = "Select userPerd.user_id,userPerd.user_personal_detail_id,userPerd.user_name,userPerd.user_email_id,userPerd.user_gender,\r\n"
-			+ "userPerd.user_height,userPerd.user_image,userPerd.user_dob,userPerd.user_weight, userd.is_blocked\r\n"
+			+ "userPerd.user_height,userPerd.user_image,userPerd.user_dob,userPerd.user_weight, userd.is_blocked, userd.sdk_type, userd.user_password, userd.job_role\r\n"
 			+ "from users_personal_details userPerd\r\n"
 			+ " inner join end_user userd on userPerd.user_id=userd.user_id \r\n"
 			+ " where userPerd.user_id=:userId", nativeQuery = true)
 	public CommonUserDetailsTable findUserPersonalDetailsByUserId(Long userId);
-	
+
 	@Query(value = " SELECT * FROM users_personal_details where user_id=:userId", nativeQuery = true)
 	public UsersPersonalDetails getByUserId(Long userId);
 

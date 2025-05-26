@@ -1,6 +1,5 @@
 package com.iss.entity;
 
-import java.math.BigDecimal;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,37 +21,37 @@ public class UsersPersonalDetails {
 	@Column(name = "user_personal_detail_id", length = 10, unique = true)
 	private Long userPersonalDetailId;
 	
-	@Column(name = "user_email_id", nullable = true, length = 50, unique = true)
+	@Column(name = "user_email_id", columnDefinition = "TEXT", unique = true)
 	private String userEmail;
 
-	@Column(name = "user_name", nullable = true, length = 40)
+	@Column(name = "user_name",columnDefinition = "TEXT")
 	private String userName;
 
-	@Column(name = "user_gender", nullable = true, length = 10)
+	@Column(name = "user_gender",columnDefinition = "TEXT")
 	private String userGender;
 
-	@Column(name = "user_dob")
+	@Column(name = "user_dob",columnDefinition = "TEXT")
 	private String userDOB;
 
-	@Column(name = "user_weight", precision = 5, scale = 2, nullable = true)
-	private BigDecimal userWeight;
+	@Column(name = "user_weight", columnDefinition = "TEXT")
+	private String userWeight;
 
-	@Column(name = "user_height", precision = 5, scale = 2, nullable = true)
-	private BigDecimal userHeight;
+	@Column(name = "user_height", columnDefinition = "TEXT")
+	private String userHeight;
 
-	@Column(name = "user_image", length = 100, nullable = true)
+	@Column(name = "user_image", columnDefinition = "TEXT")
 	private String userImage;
 
-	@Column(name = "regist_date", length = 20)
+	@Column(name = "regist_date",columnDefinition = "TEXT")
 	private String registDate;
 
-	@Column(name = "regist_pname", length = 50)
+	@Column(name = "regist_pname", columnDefinition = "TEXT")
 	private String registPName;
 
-	@Column(name = "last_update_date", length = 20)
+	@Column(name = "last_update_date", columnDefinition = "TEXT")
 	private String lastUpdateDate;
 
-	@Column(name = "last_update_pname", length = 50)
+	@Column(name = "last_update_pname",columnDefinition = "TEXT")
 	private String lastUpdatePName;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -64,7 +63,7 @@ public class UsersPersonalDetails {
 	}
 
 	public UsersPersonalDetails(Long userPersonalDetailId, String userEmail, String userName, String userGender,
-			String userDOB, BigDecimal userWeight, BigDecimal userHeight, String userImage, String registDate,
+			String userDOB, String userWeight, String userHeight, String userImage, String registDate,
 			String registPName, String lastUpdateDate, String lastUpdatePName, EndUser endUser) {
 		super();
 		this.userPersonalDetailId = userPersonalDetailId;
@@ -122,19 +121,19 @@ public class UsersPersonalDetails {
 		this.userDOB = userDOB;
 	}
 
-	public BigDecimal getUserWeight() {
+	public String getUserWeight() {
 		return userWeight;
 	}
 
-	public void setUserWeight(BigDecimal userWeight) {
+	public void setUserWeight(String userWeight) {
 		this.userWeight = userWeight;
 	}
 
-	public BigDecimal getUserHeight() {
+	public String getUserHeight() {
 		return userHeight;
 	}
 
-	public void setUserHeight(BigDecimal userHeight) {
+	public void setUserHeight(String userHeight) {
 		this.userHeight = userHeight;
 	}
 

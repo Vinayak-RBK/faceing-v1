@@ -7,8 +7,8 @@ public class PersonalDetailsDao {
 	private String userName;
 	private String userGender;
 	private String userDOB;
-	private double userWeight;
-	private double userHeight;
+	private String userWeight;
+	private String userHeight;
 	private String userImage;
 	
 	public PersonalDetailsDao() {
@@ -16,7 +16,7 @@ public class PersonalDetailsDao {
 	}
 
 	public PersonalDetailsDao(String userEmail, String password, String userName, String userGender, String userDOB,
-			double userWeight, double userHeight, String userImage) {
+			String userWeight, String userHeight, String userImage) {
 		super();
 		this.userEmail = userEmail;
 		this.password = password;
@@ -68,19 +68,19 @@ public class PersonalDetailsDao {
 		this.userDOB = userDOB;
 	}
 
-	public double getUserWeight() {
+	public String getUserWeight() {
 		return userWeight;
 	}
 
-	public void setUserWeight(double userWeight) {
+	public void setUserWeight(String userWeight) {
 		this.userWeight = userWeight;
 	}
 
-	public double getUserHeight() {
+	public String getUserHeight() {
 		return userHeight;
 	}
 
-	public void setUserHeight(double userHeight) {
+	public void setUserHeight(String userHeight) {
 		this.userHeight = userHeight;
 	}
 

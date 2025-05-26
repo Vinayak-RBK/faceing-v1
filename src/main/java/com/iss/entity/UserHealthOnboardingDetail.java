@@ -24,14 +24,14 @@ public class UserHealthOnboardingDetail {
 	@Column(name = "id", length = 10, unique = true)
 	private Long id;
 
-	@Column(name = "user_Health_Onboarding_id", length = 10)
-	private Integer userHealthOnboardingId;
+	@Column(name = "user_Health_Onboarding_id", columnDefinition = "TEXT")
+	private String userHealthOnboardingId;
 
-	@Column(name = "on_boarding_question_name", length = 500)
+	@Column(name = "on_boarding_question_name", columnDefinition = "TEXT")
 	private String onboardingQuestionName;
 
 	@Convert(converter = ItemListConverter.class)
-	@Column(name = "on_boarding_answer_value", nullable = true, length = 200,columnDefinition = "JSON")
+	@Column(name = "on_boarding_answer_value",columnDefinition = "JSON")
 	private String[] onboardingAnswerValue;
 
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -42,7 +42,7 @@ public class UserHealthOnboardingDetail {
 		super();
 	}
 
-	public UserHealthOnboardingDetail(Long id, Integer userHealthOnboardingId, String onboardingQuestionName,
+	public UserHealthOnboardingDetail(Long id, String userHealthOnboardingId, String onboardingQuestionName,
 			String[] onboardingAnswerValue, EndUser endUser) {
 		super();
 		this.id = id;
@@ -60,11 +60,11 @@ public class UserHealthOnboardingDetail {
 		this.id = id;
 	}
 
-	public Integer getUserHealthOnboardingId() {
+	public String getUserHealthOnboardingId() {
 		return userHealthOnboardingId;
 	}
 
-	public void setUserHealthOnboardingId(Integer userHealthOnboardingId) {
+	public void setUserHealthOnboardingId(String userHealthOnboardingId) {
 		this.userHealthOnboardingId = userHealthOnboardingId;
 	}
 

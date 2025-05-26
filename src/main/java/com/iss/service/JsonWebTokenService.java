@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 public interface JsonWebTokenService {
 
 	public void createUSerWithToken(String userId, String accessToken, String refreshToken, String dateTimeFormat,
-			Long accessKeyExiryTime, Long refreshKeyExpiryTime);
+			String accessKeyExiryTime, String refreshKeyExpiryTime) throws Exception;
 
 }

@@ -3,16 +3,16 @@ package com.iss.dao;
 import java.util.List;
 
 public class OnBoradingResDao {
-	
+
 	private String message;
-	private boolean isSuccess;
+	private String isSuccess;
 	private List<BasicHealthQuestionDao> list;
-	
+
 	public OnBoradingResDao() {
 		super();
 	}
 
-	public OnBoradingResDao(String message, boolean isSuccess, List<BasicHealthQuestionDao> list) {
+	public OnBoradingResDao(String message, String isSuccess, List<BasicHealthQuestionDao> list) {
 		super();
 		this.message = message;
 		this.isSuccess = isSuccess;
@@ -27,11 +27,11 @@ public class OnBoradingResDao {
 		this.message = message;
 	}
 
-	public boolean isSuccess() {
+	public String getIsSuccess() {
 		return isSuccess;
 	}
 
-	public void setSuccess(boolean isSuccess) {
+	public void setIsSuccess(String isSuccess) {
 		this.isSuccess = isSuccess;
 	}
 

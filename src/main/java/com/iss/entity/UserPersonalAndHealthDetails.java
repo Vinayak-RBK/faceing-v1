@@ -1,7 +1,5 @@
 package com.iss.entity;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,88 +9,113 @@ import jakarta.persistence.Table;
 @Table(name = "user_personal_health_details")
 public class UserPersonalAndHealthDetails {
 
-//	@Id
-//	@Column(name = "id", length = 10, unique = true)
-//	private Integer id;
-	
 	@Id
-	@Column(name = "user_id", length = 10, unique = true)
+	@Column(name = "user_id", unique = true, length = 255)
 	private String userId;
 
-	@Column(name = "user_email_id", length = 50, nullable = false, unique = true)
+	@Column(name = "user_email_id",unique = true, columnDefinition = "TEXT")
 	private String userEmail;
 
-	@Column(name = "user_password", length = 20, nullable = false)
+	@Column(name = "user_password",  columnDefinition = "TEXT")
 	private String userPassword;
 
-	@Column(name = "user_name", nullable = true, length = 40)
+	@Column(name = "user_name", columnDefinition = "TEXT")
 	private String userName;
 
-	@Column(name = "user_gender", nullable = true, length = 10)
+	@Column(name = "user_gender", columnDefinition = "TEXT")
 	private String userGender;
 
-	@Column(name = "user_dob")
+	@Column(name = "user_dob", columnDefinition = "TEXT")
 	private String userDOB;
 
-	@Column(name = "user_weight", precision = 5, scale = 2, nullable = true)
-	private BigDecimal userWeight;
+	@Column(name = "user_weight", columnDefinition = "TEXT")
+	private String userWeight;
 
-	@Column(name = "user_height", precision = 5, scale = 2, nullable = true)
-	private BigDecimal userHeight;
+	@Column(name = "user_height", columnDefinition = "TEXT")
+	private String userHeight;
 
-	@Column(name = "user_image", length = 100, nullable = true)
+	@Column(name = "user_image", columnDefinition = "TEXT")
 	private String userImage;
 	
-	@Column(name = "user_respiration_rate")
-	private BigDecimal userRespirationRate;
+	@Column(name = "age",columnDefinition = "TEXT")
+	private String age;
 
-	@Column(name = "user_blood_pressure")
-	private BigDecimal userBloodPressure;
+	@Column(name = "gender",columnDefinition = "TEXT")
+	private String gender;
 
-	@Column(name = "user_heart_rate")
-	private Integer userHeartRate;
+	@Column(name = "height",columnDefinition = "TEXT")
+	private String height;
 
-	@Column(name = "user_oxygen_saturation")
-	private BigDecimal userOxygenSaturation;
+	@Column(name = "waist_circum",columnDefinition = "TEXT")
+	private String waistCircum;
 
-	@Column(name = "user_hrv_data")
-	private BigDecimal userHRVData;
+	@Column(name = "bmi_calc",columnDefinition = "TEXT")
+	private String bMICalc;
 
-	@Column(name = "user_stress_level")
-	private BigDecimal userStressLevel;
+	@Column(name = "absi",columnDefinition = "TEXT")
+	private String aBSI;
 
-	@Column(name = "user_relaxation_level")
-	private BigDecimal userRelaxationLevel;
+	@Column(name = "hr_bpm",columnDefinition = "TEXT")
+	private String hRBPM;
 
-	@Column(name = "user_energy_level")
-	private BigDecimal userEnergyLevel;
+	@Column(name = "bp_systolic",columnDefinition = "TEXT")
+	private String bPSystolic;
 
-	@Column(name = "user_body_shape_index")
-	private Integer userBodyShapeIndex;
+	@Column(name = "hrv_sdnn",columnDefinition = "TEXT")
+	private String hRVSDNN;
 
-	@Column(name = "user_body_mass_index")
-	private BigDecimal userBodyMassIndex;
+	@Column(name = "bp_rpp",columnDefinition = "TEXT")
+	private String bPRPP;
 
-	@Column(name = "user_age")
-	private Integer userAge;
+	@Column(name = "bp_tau",columnDefinition = "TEXT")
+	private String bPTau;
 
-	@Column(name = "user_hemoglobin_level")
-	private BigDecimal userHemoglobinLevel;
+	@Column(name = "bp_bpm",columnDefinition = "TEXT")
+	private String bPBPM;
 
-	@Column(name = "user_fitness_level")
-	private BigDecimal userFitnessLevel;
+	@Column(name = "tHBCount",columnDefinition = "TEXT")
+	private String tHBCount;
+
+	@Column(name = "health_score",columnDefinition = "TEXT")
+	private String healthScore;
+
+	@Column(name = "mental_score",columnDefinition = "TEXT")
+	private String mentalScore;
+
+	@Column(name = "vital_score",columnDefinition = "TEXT")
+	private String vitalScore;
+
+	@Column(name = "physical_score",columnDefinition = "TEXT")
+	private String physicalScore;
+
+	@Column(name = "msi",columnDefinition = "TEXT")
+	private String mSI;
+
+	@Column(name = "bp_heart_attack",columnDefinition = "TEXT")
+	private String bpHeartAttack;
+
+	@Column(name = "bp_stroke",columnDefinition = "TEXT")
+	private String bPStroke;
+
+	@Column(name = "bp_cvd",columnDefinition = "TEXT")
+	private String bPCVD;
+
+	@Column(name = "risk_score",columnDefinition = "TEXT")
+	private String risksScore;
+
+	@Column(name = "snr",columnDefinition = "TEXT")
+	private String sNR;
 	
 	public UserPersonalAndHealthDetails() {
 		super();
 	}
 
-	public UserPersonalAndHealthDetails(String userId, String userEmail, String userPassword,
-			String userName, String userGender, String userDOB, BigDecimal userWeight, BigDecimal userHeight,
-			String userImage, BigDecimal userRespirationRate, BigDecimal userBloodPressure, Integer userHeartRate,
-			BigDecimal userOxygenSaturation, BigDecimal userHRVData, BigDecimal userStressLevel,
-			BigDecimal userRelaxationLevel, BigDecimal userEnergyLevel, Integer userBodyShapeIndex,
-			BigDecimal userBodyMassIndex, Integer userAge, BigDecimal userHemoglobinLevel,
-			BigDecimal userFitnessLevel) {
+	public UserPersonalAndHealthDetails(String userId, String userEmail, String userPassword, String userName,
+			String userGender, String userDOB, String userWeight, String userHeight, String userImage, String age,
+			String gender, String height, String waistCircum, String bMICalc, String aBSI, String hRBPM,
+			String bPSystolic, String hRVSDNN, String bPRPP, String bPTau, String bPBPM, String tHBCount,
+			String healthScore, String mentalScore, String vitalScore, String physicalScore, String mSI,
+			String bpHeartAttack, String bPStroke, String bPCVD, String risksScore, String sNR) {
 		super();
 		this.userId = userId;
 		this.userEmail = userEmail;
@@ -103,19 +126,29 @@ public class UserPersonalAndHealthDetails {
 		this.userWeight = userWeight;
 		this.userHeight = userHeight;
 		this.userImage = userImage;
-		this.userRespirationRate = userRespirationRate;
-		this.userBloodPressure = userBloodPressure;
-		this.userHeartRate = userHeartRate;
-		this.userOxygenSaturation = userOxygenSaturation;
-		this.userHRVData = userHRVData;
-		this.userStressLevel = userStressLevel;
-		this.userRelaxationLevel = userRelaxationLevel;
-		this.userEnergyLevel = userEnergyLevel;
-		this.userBodyShapeIndex = userBodyShapeIndex;
-		this.userBodyMassIndex = userBodyMassIndex;
-		this.userAge = userAge;
-		this.userHemoglobinLevel = userHemoglobinLevel;
-		this.userFitnessLevel = userFitnessLevel;
+		this.age = age;
+		this.gender = gender;
+		this.height = height;
+		this.waistCircum = waistCircum;
+		this.bMICalc = bMICalc;
+		this.aBSI = aBSI;
+		this.hRBPM = hRBPM;
+		this.bPSystolic = bPSystolic;
+		this.hRVSDNN = hRVSDNN;
+		this.bPRPP = bPRPP;
+		this.bPTau = bPTau;
+		this.bPBPM = bPBPM;
+		this.tHBCount = tHBCount;
+		this.healthScore = healthScore;
+		this.mentalScore = mentalScore;
+		this.vitalScore = vitalScore;
+		this.physicalScore = physicalScore;
+		this.mSI = mSI;
+		this.bpHeartAttack = bpHeartAttack;
+		this.bPStroke = bPStroke;
+		this.bPCVD = bPCVD;
+		this.risksScore = risksScore;
+		this.sNR = sNR;
 	}
 
 	public String getUserId() {
@@ -166,19 +199,19 @@ public class UserPersonalAndHealthDetails {
 		this.userDOB = userDOB;
 	}
 
-	public BigDecimal getUserWeight() {
+	public String getUserWeight() {
 		return userWeight;
 	}
 
-	public void setUserWeight(BigDecimal userWeight) {
+	public void setUserWeight(String userWeight) {
 		this.userWeight = userWeight;
 	}
 
-	public BigDecimal getUserHeight() {
+	public String getUserHeight() {
 		return userHeight;
 	}
 
-	public void setUserHeight(BigDecimal userHeight) {
+	public void setUserHeight(String userHeight) {
 		this.userHeight = userHeight;
 	}
 
@@ -190,122 +223,200 @@ public class UserPersonalAndHealthDetails {
 		this.userImage = userImage;
 	}
 
-	public BigDecimal getUserRespirationRate() {
-		return userRespirationRate;
+	public String getAge() {
+		return age;
 	}
 
-	public void setUserRespirationRate(BigDecimal userRespirationRate) {
-		this.userRespirationRate = userRespirationRate;
+	public void setAge(String age) {
+		this.age = age;
 	}
 
-	public BigDecimal getUserBloodPressure() {
-		return userBloodPressure;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setUserBloodPressure(BigDecimal userBloodPressure) {
-		this.userBloodPressure = userBloodPressure;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
-	public Integer getUserHeartRate() {
-		return userHeartRate;
+	public String getHeight() {
+		return height;
 	}
 
-	public void setUserHeartRate(Integer userHeartRate) {
-		this.userHeartRate = userHeartRate;
+	public void setHeight(String height) {
+		this.height = height;
 	}
 
-	public BigDecimal getUserOxygenSaturation() {
-		return userOxygenSaturation;
+	public String getWaistCircum() {
+		return waistCircum;
 	}
 
-	public void setUserOxygenSaturation(BigDecimal userOxygenSaturation) {
-		this.userOxygenSaturation = userOxygenSaturation;
+	public void setWaistCircum(String waistCircum) {
+		this.waistCircum = waistCircum;
 	}
 
-	public BigDecimal getUserHRVData() {
-		return userHRVData;
+	public String getbMICalc() {
+		return bMICalc;
 	}
 
-	public void setUserHRVData(BigDecimal userHRVData) {
-		this.userHRVData = userHRVData;
+	public void setbMICalc(String bMICalc) {
+		this.bMICalc = bMICalc;
 	}
 
-	public BigDecimal getUserStressLevel() {
-		return userStressLevel;
+	public String getaBSI() {
+		return aBSI;
 	}
 
-	public void setUserStressLevel(BigDecimal userStressLevel) {
-		this.userStressLevel = userStressLevel;
+	public void setaBSI(String aBSI) {
+		this.aBSI = aBSI;
 	}
 
-	public BigDecimal getUserRelaxationLevel() {
-		return userRelaxationLevel;
+	public String gethRBPM() {
+		return hRBPM;
 	}
 
-	public void setUserRelaxationLevel(BigDecimal userRelaxationLevel) {
-		this.userRelaxationLevel = userRelaxationLevel;
+	public void sethRBPM(String hRBPM) {
+		this.hRBPM = hRBPM;
 	}
 
-	public BigDecimal getUserEnergyLevel() {
-		return userEnergyLevel;
+	public String getbPSystolic() {
+		return bPSystolic;
 	}
 
-	public void setUserEnergyLevel(BigDecimal userEnergyLevel) {
-		this.userEnergyLevel = userEnergyLevel;
+	public void setbPSystolic(String bPSystolic) {
+		this.bPSystolic = bPSystolic;
 	}
 
-	public Integer getUserBodyShapeIndex() {
-		return userBodyShapeIndex;
+	public String gethRVSDNN() {
+		return hRVSDNN;
 	}
 
-	public void setUserBodyShapeIndex(Integer userBodyShapeIndex) {
-		this.userBodyShapeIndex = userBodyShapeIndex;
+	public void sethRVSDNN(String hRVSDNN) {
+		this.hRVSDNN = hRVSDNN;
 	}
 
-	public BigDecimal getUserBodyMassIndex() {
-		return userBodyMassIndex;
+	public String getbPRPP() {
+		return bPRPP;
 	}
 
-	public void setUserBodyMassIndex(BigDecimal userBodyMassIndex) {
-		this.userBodyMassIndex = userBodyMassIndex;
+	public void setbPRPP(String bPRPP) {
+		this.bPRPP = bPRPP;
 	}
 
-	public Integer getUserAge() {
-		return userAge;
+	public String getbPTau() {
+		return bPTau;
 	}
 
-	public void setUserAge(Integer userAge) {
-		this.userAge = userAge;
+	public void setbPTau(String bPTau) {
+		this.bPTau = bPTau;
 	}
 
-	public BigDecimal getUserHemoglobinLevel() {
-		return userHemoglobinLevel;
+	public String getbPBPM() {
+		return bPBPM;
 	}
 
-	public void setUserHemoglobinLevel(BigDecimal userHemoglobinLevel) {
-		this.userHemoglobinLevel = userHemoglobinLevel;
+	public void setbPBPM(String bPBPM) {
+		this.bPBPM = bPBPM;
 	}
 
-	public BigDecimal getUserFitnessLevel() {
-		return userFitnessLevel;
+	public String gettHBCount() {
+		return tHBCount;
 	}
 
-	public void setUserFitnessLevel(BigDecimal userFitnessLevel) {
-		this.userFitnessLevel = userFitnessLevel;
+	public void settHBCount(String tHBCount) {
+		this.tHBCount = tHBCount;
+	}
+
+	public String getHealthScore() {
+		return healthScore;
+	}
+
+	public void setHealthScore(String healthScore) {
+		this.healthScore = healthScore;
+	}
+
+	public String getMentalScore() {
+		return mentalScore;
+	}
+
+	public void setMentalScore(String mentalScore) {
+		this.mentalScore = mentalScore;
+	}
+
+	public String getVitalScore() {
+		return vitalScore;
+	}
+
+	public void setVitalScore(String vitalScore) {
+		this.vitalScore = vitalScore;
+	}
+
+	public String getPhysicalScore() {
+		return physicalScore;
+	}
+
+	public void setPhysicalScore(String physicalScore) {
+		this.physicalScore = physicalScore;
+	}
+
+	public String getmSI() {
+		return mSI;
+	}
+
+	public void setmSI(String mSI) {
+		this.mSI = mSI;
+	}
+
+	public String getBpHeartAttack() {
+		return bpHeartAttack;
+	}
+
+	public void setBpHeartAttack(String bpHeartAttack) {
+		this.bpHeartAttack = bpHeartAttack;
+	}
+
+	public String getbPStroke() {
+		return bPStroke;
+	}
+
+	public void setbPStroke(String bPStroke) {
+		this.bPStroke = bPStroke;
+	}
+
+	public String getbPCVD() {
+		return bPCVD;
+	}
+
+	public void setbPCVD(String bPCVD) {
+		this.bPCVD = bPCVD;
+	}
+
+	public String getRisksScore() {
+		return risksScore;
+	}
+
+	public void setRisksScore(String risksScore) {
+		this.risksScore = risksScore;
+	}
+
+	public String getsNR() {
+		return sNR;
+	}
+
+	public void setsNR(String sNR) {
+		this.sNR = sNR;
 	}
 
 	@Override
 	public String toString() {
-		return "UserPersonalAndHealthDetails [userId=" + userId + ", userEmail=" + userEmail
-				+ ", userPassword=" + userPassword + ", userName=" + userName + ", userGender=" + userGender
-				+ ", userDOB=" + userDOB + ", userWeight=" + userWeight + ", userHeight=" + userHeight + ", userImage="
-				+ userImage + ", userRespirationRate=" + userRespirationRate + ", userBloodPressure="
-				+ userBloodPressure + ", userHeartRate=" + userHeartRate + ", userOxygenSaturation="
-				+ userOxygenSaturation + ", userHRVData=" + userHRVData + ", userStressLevel=" + userStressLevel
-				+ ", userRelaxationLevel=" + userRelaxationLevel + ", userEnergyLevel=" + userEnergyLevel
-				+ ", userBodyShapeIndex=" + userBodyShapeIndex + ", userBodyMassIndex=" + userBodyMassIndex
-				+ ", userAge=" + userAge + ", userHemoglobinLevel=" + userHemoglobinLevel + ", userFitnessLevel="
-				+ userFitnessLevel + "]";
+		return "UserPersonalAndHealthDetails [userId=" + userId + ", userEmail=" + userEmail + ", userPassword="
+				+ userPassword + ", userName=" + userName + ", userGender=" + userGender + ", userDOB=" + userDOB
+				+ ", userWeight=" + userWeight + ", userHeight=" + userHeight + ", userImage=" + userImage + ", age="
+				+ age + ", gender=" + gender + ", height=" + height + ", waistCircum=" + waistCircum + ", bMICalc="
+				+ bMICalc + ", aBSI=" + aBSI + ", hRBPM=" + hRBPM + ", bPSystolic=" + bPSystolic + ", hRVSDNN="
+				+ hRVSDNN + ", bPRPP=" + bPRPP + ", bPTau=" + bPTau + ", bPBPM=" + bPBPM + ", tHBCount=" + tHBCount
+				+ ", healthScore=" + healthScore + ", mentalScore=" + mentalScore + ", vitalScore=" + vitalScore
+				+ ", physicalScore=" + physicalScore + ", mSI=" + mSI + ", bpHeartAttack=" + bpHeartAttack
+				+ ", bPStroke=" + bPStroke + ", bPCVD=" + bPCVD + ", risksScore=" + risksScore + ", sNR=" + sNR + "]";
 	}
-	
 }

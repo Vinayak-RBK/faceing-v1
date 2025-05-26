@@ -3,20 +3,28 @@ package com.iss.dao;
 import java.util.List;
 
 public class GuestInfoListDao {
-	
+
 	private String msg;
-	private boolean success;
+	private String success;
 	private List<GuestDao> guestListDao;
-	
+	private GuestHealthAnuraDetailsDao guestHealthAnuraDetail;
+	private GuestHealthBinahDetailsDao guestHealthBinahDetail;
+	private List<GuestHealthInfoDao> healthInfoDaoList;
+
 	public GuestInfoListDao() {
 		super();
 	}
 
-	public GuestInfoListDao(String msg, boolean success, List<GuestDao> guestListDao) {
+	public GuestInfoListDao(String msg, String success, List<GuestDao> guestListDao,
+			GuestHealthAnuraDetailsDao guestHealthAnuraDetail, GuestHealthBinahDetailsDao guestHealthBinahDetail,
+			List<GuestHealthInfoDao> healthInfoDaoList) {
 		super();
 		this.msg = msg;
 		this.success = success;
 		this.guestListDao = guestListDao;
+		this.guestHealthAnuraDetail = guestHealthAnuraDetail;
+		this.guestHealthBinahDetail = guestHealthBinahDetail;
+		this.healthInfoDaoList = healthInfoDaoList;
 	}
 
 	public String getMsg() {
@@ -27,11 +35,11 @@ public class GuestInfoListDao {
 		this.msg = msg;
 	}
 
-	public boolean isSuccess() {
+	public String getSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(String success) {
 		this.success = success;
 	}
 
@@ -43,9 +51,35 @@ public class GuestInfoListDao {
 		this.guestListDao = guestListDao;
 	}
 
+	public GuestHealthAnuraDetailsDao getGuestHealthAnuraDetail() {
+		return guestHealthAnuraDetail;
+	}
+
+	public void setGuestHealthAnuraDetail(GuestHealthAnuraDetailsDao guestHealthAnuraDetail) {
+		this.guestHealthAnuraDetail = guestHealthAnuraDetail;
+	}
+
+	public GuestHealthBinahDetailsDao getGuestHealthBinahDetail() {
+		return guestHealthBinahDetail;
+	}
+
+	public void setGuestHealthBinahDetail(GuestHealthBinahDetailsDao guestHealthBinahDetail) {
+		this.guestHealthBinahDetail = guestHealthBinahDetail;
+	}
+
+	public List<GuestHealthInfoDao> getHealthInfoDaoList() {
+		return healthInfoDaoList;
+	}
+
+	public void setHealthInfoDaoList(List<GuestHealthInfoDao> healthInfoDaoList) {
+		this.healthInfoDaoList = healthInfoDaoList;
+	}
+
 	@Override
 	public String toString() {
-		return "GuestInfoListDao [msg=" + msg + ", success=" + success + ", guestListDao=" + guestListDao + "]";
+		return "GuestInfoListDao [msg=" + msg + ", success=" + success + ", guestListDao=" + guestListDao
+				+ ", guestHealthAnuraDetail=" + guestHealthAnuraDetail + ", guestHealthBinahDetail="
+				+ guestHealthBinahDetail + ", healthInfoDaoList=" + healthInfoDaoList + "]";
 	}
-	
+
 }

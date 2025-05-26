@@ -22,80 +22,85 @@ public class AdminUser {
 //			@Parameter(name = UserSequenceGenerator.NUMBER_FORMAT_PARAMETER, value = "%o5d")
 //	}
 //			)
-	@Column(name = "admin_id", length = 16, unique = true)
+	@Column(name = "admin_id", unique = true)
 	private Long adminId;
+	
+	@Column(name = "admin_id_ref",columnDefinition = "TEXT")
+	private String adminIdRef;
 
-	@Column(name = "admin_email_id", length = 50, nullable = false, unique = true)
+	@Column(name = "admin_email_id",  unique = true,columnDefinition = "TEXT")
 	private String adminEmail;
 
-	@Column(name = "admin_password", length = 20, nullable = false)
+	@Column(name = "admin_password", columnDefinition = "TEXT")
 	private String adminPassword;
 
-	@Column(name = "admin_otp", length = 5, nullable = true)
+	@Column(name = "admin_otp", nullable = true,columnDefinition = "TEXT")
 	private String adminOTP;
 
-	@Column(name = "is_admin", columnDefinition = "TINYINT(1)")
-	private Boolean isAdmin;
+	@Column(name = "is_admin", columnDefinition = "TEXT")
+	private String isAdmin;
 
-	@Column(name = "is_userManagement", columnDefinition = "TINYINT(1)")
-	private Boolean isUserManagement;
+	@Column(name = "is_userManagement", columnDefinition = "TEXT")
+	private String isUserManagement;
 
-	@Column(name = "is_questionaries", columnDefinition = "TINYINT(1)")
-	private Boolean isQuestionaries;
+	@Column(name = "is_questionaries", columnDefinition = "TEXT")
+	private String isQuestionaries;
 
-	@Column(name = "is_legal_setting", columnDefinition = "TINYINT(1)")
-	private Boolean isLegalSetting;
+	@Column(name = "is_legal_setting", columnDefinition = "TEXT")
+	private String isLegalSetting;
 
-	@Column(name = "role", length = 10)
-	private int role;
+	@Column(name = "role",columnDefinition = "TEXT")
+	private String role;
 
-	@Column(name = "otp_entry_date", length = 20)
+	@Column(name = "otp_entry_date",columnDefinition = "TEXT")
 	private String otpEntryDate;
 
-	@Column(name = "term_cond", columnDefinition = "TINYINT(1)")
-	private Boolean termCond;
+	@Column(name = "term_cond", columnDefinition = "TEXT")
+	private String termCond;
 
-	@Column(name = "admin_on_session", columnDefinition = "TINYINT(1)")
-	private Boolean adminOnSession;
+	@Column(name = "admin_on_session", columnDefinition = "TEXT")
+	private String adminOnSession;
 
-	@Column(name = "is_verified", columnDefinition = "TINYINT(1)")
-	private Boolean isVerified;
+	@Column(name = "is_verified",columnDefinition = "TEXT")
+	private String isVerified;
 
-	@Column(name = "login_attempt_fail_count")
-	private int loginAttemptFailCount;
+	@Column(name = "login_attempt_fail_count",columnDefinition = "TEXT")
+	private String loginAttemptFailCount;
 
-	@Column(name = "login_attempt_max_release_time")
-	private int loginAttemptMaxReleaseTime;
+	@Column(name = "login_attempt_max_release_time",columnDefinition = "TEXT")
+	private String loginAttemptMaxReleaseTime;
 
-	@Column(name = "locked_Date_Time_for_login", length = 20, nullable = true)
+	@Column(name = "locked_Date_Time_for_login",columnDefinition = "TEXT")
 	private String lockedDateTimeForLogin;
 
-	@Column(name = "max_attempt_fail_block_login", columnDefinition = "TINYINT(1)")
-	private Boolean maxAttemptFailBlockForLogin;
+	@Column(name = "max_attempt_fail_block_login",columnDefinition = "TEXT")
+	private String maxAttemptFailBlockForLogin;
 
-	@Column(name = "regist_date", length = 20, nullable = true)
+	@Column(name = "regist_date",columnDefinition = "TEXT")
 	private String registDate;
 
-	@Column(name = "regist_pname", length = 50)
+	@Column(name = "regist_pname",columnDefinition = "TEXT")
 	private String registPName;
 
-	@Column(name = "last_update_date", length = 20, nullable = true)
+	@Column(name = "last_update_date",columnDefinition = "TEXT")
 	private String lastUpdateDate;
 
-	@Column(name = "last_update_pname", length = 50)
+	@Column(name = "last_update_pname",columnDefinition = "TEXT")
 	private String lastUpdatePName;
 
 	public AdminUser() {
 		super();
 	}
 
-	public AdminUser(Long adminId, String adminEmail, String adminPassword, String adminOTP, Boolean isAdmin,
-			Boolean isUserManagement, Boolean isQuestionaries, Boolean isLegalSetting, int role, String otpEntryDate,
-			Boolean termCond, Boolean adminOnSession, Boolean isVerified, int loginAttemptFailCount,
-			int loginAttemptMaxReleaseTime, String lockedDateTimeForLogin, Boolean maxAttemptFailBlockForLogin,
-			String registDate, String registPName, String lastUpdateDate, String lastUpdatePName) {
+	public AdminUser(Long adminId, String adminIdRef, String adminEmail, String adminPassword, String adminOTP,
+			String isAdmin, String isUserManagement, String isQuestionaries, String isLegalSetting, String role,
+			String otpEntryDate, String termCond, String adminOnSession, String isVerified,
+			String loginAttemptFailCount, String loginAttemptMaxReleaseTime, String lockedDateTimeForLogin,
+			String maxAttemptFailBlockForLogin, String registDate, String registPName, String lastUpdateDate,
+			String lastUpdatePName) {
 		super();
 		this.adminId = adminId;
+		this.adminIdRef = adminIdRef;
 		this.adminEmail = adminEmail;
 		this.adminPassword = adminPassword;
 		this.adminOTP = adminOTP;
@@ -125,6 +130,14 @@ public class AdminUser {
 	public void setAdminId(Long adminId) {
 		this.adminId = adminId;
 	}
+	
+	public String getAdminIdRef() {
+		return adminIdRef;
+	}
+
+	public void setAdminIdRef(String adminIdRef) {
+		this.adminIdRef = adminIdRef;
+	}
 
 	public String getAdminEmail() {
 		return adminEmail;
@@ -150,43 +163,43 @@ public class AdminUser {
 		this.adminOTP = adminOTP;
 	}
 
-	public Boolean getIsAdmin() {
+	public String getIsAdmin() {
 		return isAdmin;
 	}
 
-	public void setIsAdmin(Boolean isAdmin) {
+	public void setIsAdmin(String isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 
-	public Boolean getIsUserManagement() {
+	public String getIsUserManagement() {
 		return isUserManagement;
 	}
 
-	public void setIsUserManagement(Boolean isUserManagement) {
+	public void setIsUserManagement(String isUserManagement) {
 		this.isUserManagement = isUserManagement;
 	}
 
-	public Boolean getIsQuestionaries() {
+	public String getIsQuestionaries() {
 		return isQuestionaries;
 	}
 
-	public void setIsQuestionaries(Boolean isQuestionaries) {
+	public void setIsQuestionaries(String isQuestionaries) {
 		this.isQuestionaries = isQuestionaries;
 	}
 
-	public Boolean getIsLegalSetting() {
+	public String getIsLegalSetting() {
 		return isLegalSetting;
 	}
 
-	public void setIsLegalSetting(Boolean isLegalSetting) {
+	public void setIsLegalSetting(String isLegalSetting) {
 		this.isLegalSetting = isLegalSetting;
 	}
 
-	public int getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(int role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 
@@ -198,43 +211,43 @@ public class AdminUser {
 		this.otpEntryDate = otpEntryDate;
 	}
 
-	public Boolean getTermCond() {
+	public String getTermCond() {
 		return termCond;
 	}
 
-	public void setTermCond(Boolean termCond) {
+	public void setTermCond(String termCond) {
 		this.termCond = termCond;
 	}
 
-	public Boolean getAdminOnSession() {
+	public String getAdminOnSession() {
 		return adminOnSession;
 	}
 
-	public void setAdminOnSession(Boolean adminOnSession) {
+	public void setAdminOnSession(String adminOnSession) {
 		this.adminOnSession = adminOnSession;
 	}
 
-	public Boolean getIsVerified() {
+	public String getIsVerified() {
 		return isVerified;
 	}
 
-	public void setIsVerified(Boolean isVerified) {
+	public void setIsVerified(String isVerified) {
 		this.isVerified = isVerified;
 	}
 
-	public int getLoginAttemptFailCount() {
+	public String getLoginAttemptFailCount() {
 		return loginAttemptFailCount;
 	}
 
-	public void setLoginAttemptFailCount(int loginAttemptFailCount) {
+	public void setLoginAttemptFailCount(String loginAttemptFailCount) {
 		this.loginAttemptFailCount = loginAttemptFailCount;
 	}
 
-	public int getLoginAttemptMaxReleaseTime() {
+	public String getLoginAttemptMaxReleaseTime() {
 		return loginAttemptMaxReleaseTime;
 	}
 
-	public void setLoginAttemptMaxReleaseTime(int loginAttemptMaxReleaseTime) {
+	public void setLoginAttemptMaxReleaseTime(String loginAttemptMaxReleaseTime) {
 		this.loginAttemptMaxReleaseTime = loginAttemptMaxReleaseTime;
 	}
 
@@ -246,11 +259,11 @@ public class AdminUser {
 		this.lockedDateTimeForLogin = lockedDateTimeForLogin;
 	}
 
-	public Boolean getMaxAttemptFailBlockForLogin() {
+	public String getMaxAttemptFailBlockForLogin() {
 		return maxAttemptFailBlockForLogin;
 	}
 
-	public void setMaxAttemptFailBlockForLogin(Boolean maxAttemptFailBlockForLogin) {
+	public void setMaxAttemptFailBlockForLogin(String maxAttemptFailBlockForLogin) {
 		this.maxAttemptFailBlockForLogin = maxAttemptFailBlockForLogin;
 	}
 
@@ -288,15 +301,16 @@ public class AdminUser {
 
 	@Override
 	public String toString() {
-		return "AdminUser [adminId=" + adminId + ", adminEmail=" + adminEmail + ", adminPassword=" + adminPassword
-				+ ", adminOTP=" + adminOTP + ", isAdmin=" + isAdmin + ", isUserManagement=" + isUserManagement
-				+ ", isQuestionaries=" + isQuestionaries + ", isLegalSetting=" + isLegalSetting + ", role=" + role
-				+ ", otpEntryDate=" + otpEntryDate + ", termCond=" + termCond + ", adminOnSession=" + adminOnSession
-				+ ", isVerified=" + isVerified + ", loginAttemptFailCount=" + loginAttemptFailCount
-				+ ", loginAttemptMaxReleaseTime=" + loginAttemptMaxReleaseTime + ", lockedDateTimeForLogin="
-				+ lockedDateTimeForLogin + ", maxAttemptFailBlockForLogin=" + maxAttemptFailBlockForLogin
-				+ ", registDate=" + registDate + ", registPName=" + registPName + ", lastUpdateDate=" + lastUpdateDate
-				+ ", lastUpdatePName=" + lastUpdatePName + "]";
+		return "AdminUser [adminId=" + adminId + ", adminIdRef=" + adminIdRef + ", adminEmail=" + adminEmail
+				+ ", adminPassword=" + adminPassword + ", adminOTP=" + adminOTP + ", isAdmin=" + isAdmin
+				+ ", isUserManagement=" + isUserManagement + ", isQuestionaries=" + isQuestionaries
+				+ ", isLegalSetting=" + isLegalSetting + ", role=" + role + ", otpEntryDate=" + otpEntryDate
+				+ ", termCond=" + termCond + ", adminOnSession=" + adminOnSession + ", isVerified=" + isVerified
+				+ ", loginAttemptFailCount=" + loginAttemptFailCount + ", loginAttemptMaxReleaseTime="
+				+ loginAttemptMaxReleaseTime + ", lockedDateTimeForLogin=" + lockedDateTimeForLogin
+				+ ", maxAttemptFailBlockForLogin=" + maxAttemptFailBlockForLogin + ", registDate=" + registDate
+				+ ", registPName=" + registPName + ", lastUpdateDate=" + lastUpdateDate + ", lastUpdatePName="
+				+ lastUpdatePName + "]";
 	}
 
 }

@@ -8,13 +8,13 @@ public class LoginUserDao {
 	private String emailId;
 	private String password;
 	private String message;
-	private boolean isEmailExists;
+	private String isEmailExists;
 
 	public LoginUserDao() {
 		super();
 	}
-	
-	public LoginUserDao(String emailId, String password, String message, boolean isEmailExists) {
+
+	public LoginUserDao(String emailId, String password, String message, String isEmailExists) {
 		super();
 		this.emailId = emailId;
 		this.password = password;
@@ -37,7 +37,7 @@ public class LoginUserDao {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getMessage() {
 		return message;
 	}
@@ -46,11 +46,11 @@ public class LoginUserDao {
 		this.message = message;
 	}
 
-	public boolean isEmailExists() {
+	public String getIsEmailExists() {
 		return isEmailExists;
 	}
 
-	public void setEmailExists(boolean isEmailExists) {
+	public void setIsEmailExists(String isEmailExists) {
 		this.isEmailExists = isEmailExists;
 	}
 
@@ -59,7 +59,5 @@ public class LoginUserDao {
 		return "LoginUserDao [emailId=" + emailId + ", password=" + password + ", message=" + message
 				+ ", isEmailExists=" + isEmailExists + "]";
 	}
-	
-	
 
 }

@@ -5,23 +5,23 @@ import com.iss.header.HttpHeaders;
 public class AdminResponseDao {
 
 	private String message;
-	private boolean isSuccess;
+	private String isSuccess;
 	private String otp;
 	private String adminId;
 	private String email;
 	private String id;
-	private boolean isAdmin;
-	private boolean isUserManagement;
-	private boolean isQuestionaries;
-	private boolean isLegalSetting;
+	private String isAdmin;
+	private String isUserManagement;
+	private String isQuestionaries;
+	private String isLegalSetting;
 	private HttpHeaders headers;
 	
 	public AdminResponseDao() {
 		super();
 	}
 
-	public AdminResponseDao(String message, boolean isSuccess, String otp, String adminId, String email, String id,
-			boolean isAdmin, boolean isUserManagement, boolean isQuestionaries, boolean isLegalSetting,
+	public AdminResponseDao(String message, String isSuccess, String otp, String adminId, String email, String id,
+			String isAdmin, String isUserManagement, String isQuestionaries, String isLegalSetting,
 			HttpHeaders headers) {
 		super();
 		this.message = message;
@@ -45,11 +45,11 @@ public class AdminResponseDao {
 		this.message = message;
 	}
 
-	public boolean isSuccess() {
+	public String isSuccess() {
 		return isSuccess;
 	}
 
-	public void setSuccess(boolean isSuccess) {
+	public void setSuccess(String isSuccess) {
 		this.isSuccess = isSuccess;
 	}
 
@@ -85,35 +85,35 @@ public class AdminResponseDao {
 		this.id = id;
 	}
 
-	public boolean isAdmin() {
+	public String isAdmin() {
 		return isAdmin;
 	}
 
-	public void setAdmin(boolean isAdmin) {
+	public void setAdmin(String isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 
-	public boolean isUserManagement() {
+	public String isUserManagement() {
 		return isUserManagement;
 	}
 
-	public void setUserManagement(boolean isUserManagement) {
+	public void setUserManagement(String isUserManagement) {
 		this.isUserManagement = isUserManagement;
 	}
 
-	public boolean isQuestionaries() {
+	public String isQuestionaries() {
 		return isQuestionaries;
 	}
 
-	public void setQuestionaries(boolean isQuestionaries) {
+	public void setQuestionaries(String isQuestionaries) {
 		this.isQuestionaries = isQuestionaries;
 	}
 
-	public boolean isLegalSetting() {
+	public String isLegalSetting() {
 		return isLegalSetting;
 	}
 
-	public void setLegalSetting(boolean isLegalSetting) {
+	public void setLegalSetting(String isLegalSetting) {
 		this.isLegalSetting = isLegalSetting;
 	}
 

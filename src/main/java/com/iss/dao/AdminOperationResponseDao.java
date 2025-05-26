@@ -2,7 +2,7 @@ package com.iss.dao;
 
 public class AdminOperationResponseDao {
 	
-	private boolean success;
+	private String success;
 	private String message;
 	private String userId;
 	
@@ -10,18 +10,18 @@ public class AdminOperationResponseDao {
 		super();
 	}
 
-	public AdminOperationResponseDao(boolean success, String message, String userId) {
+	public AdminOperationResponseDao(String success, String message, String userId) {
 		super();
 		this.success = success;
 		this.message = message;
 		this.userId = userId;
 	}
 
-	public boolean isSuccess() {
+	public String isSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(String success) {
 		this.success = success;
 	}
 

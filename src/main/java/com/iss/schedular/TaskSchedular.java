@@ -36,31 +36,59 @@ public class TaskSchedular {
 	// as well
 	// Deleting all the un verified users
 	// now set for 60 minutes=1 hour
-	@Scheduled(fixedRate = 60, scheduler = "myScheduler1", timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedRate = 24, scheduler = "myScheduler1", timeUnit = TimeUnit.HOURS)
 	public void myScheduler11() {
 		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
 		String currentDate = sdf.format(new Date());
 		logger.info("Deleting UnVerified Users : Current Time - {}", currentDate);
-		System.out.println("This is Time keeper method 1");
-		unVerifiedUserDelete.deleteUserUnVerified();
+		try {
+			unVerifiedUserDelete.deleteUserOnboardingPending();
+			logger.info("Deleted All UnVerified Users : Current Time - {}", currentDate);
+		} catch (Exception e) {
+			logger.info("Error occured while deleting UnVerified Users : Current Time - {} - {}", currentDate, e);
+		}
 	}
 
 	// Reset for End User
-	@Scheduled(fixedRate = 60, timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
 	public void resetLoginAttemptsAfterTimeOverForEndUser() {
 		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
 		String currentDate = sdf.format(new Date());
 		logger.info("Resetting blocked End Users : Current Time - {}", currentDate);
-		loginUserService.checkAndResetLoginAttemptsForUser(dateTimeFormat);
+		try {
+			loginUserService.checkAndResetLoginAttemptsForUser(dateTimeFormat);
+			logger.info("Resetted All blocked End Users : Current Time - {}", currentDate);
+		} catch (Exception e) {
+			logger.info("Error occured while Resetting blocked End Users : Current Time - {} - {}", currentDate, e);
+		}
 	}
 
 	// Reset for Admin User
-	@Scheduled(fixedRate = 60, timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
 	public void resetLoginAttemptsAfterTimeOverForAdminUser() {
 		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
 		String currentDate = sdf.format(new Date());
 		logger.info("Resetting blocked Admin Users : Current Time - {}", currentDate);
-		adminAuthService.checkAndResetLoginAttemptsForAdmin(dateTimeFormat);
+		try {
+			adminAuthService.checkAndResetLoginAttemptsForAdmin(dateTimeFormat);
+			logger.info("Resetted All blocked Admin Users : Current Time - {}", currentDate);
+		} catch (Exception e) {
+			logger.info("Error occured while Resetting blocked Admin Users : Current Time - {} - {}", currentDate, e);
+		}
+	}
+
+	@Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
+	public void resetBlockedUserSite() {
+		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
+		String currentDate = sdf.format(new Date());
+		logger.info("Resetting blocked Admin Users : Current Time - {}", currentDate);
+		try {
+			adminAuthService.resetBlockedUserSiteService(dateTimeFormat);
+			logger.info("Resetted All blocked Site Users : Current Time - {}", currentDate);
+		} catch (Exception e) {
+			logger.info("Error occured while deleting Resetting blocked Site Users : Current Time - {} - {}",
+					currentDate, e);
+		}
 	}
 
 }

@@ -10,39 +10,39 @@ import jakarta.persistence.Table;
 public class JsonWebToken {
 	
 	@Id
-	@Column(name = "user_id")
+	@Column(name = "user_id", length = 255)
 	private String userId;
 	
-	@Column(name = "access_token")
+	@Column(name = "access_token", columnDefinition = "TEXT")
 	private String accessToken;
 	
-	@Column(name = "refresh_token")
+	@Column(name = "refresh_token", columnDefinition = "TEXT")
 	private String refreshToken;
 	
-	@Column(name = "expiry_days_access_token")
-	private Long expiryDaysAccessToken;
+	@Column(name = "expiry_days_access_token", columnDefinition = "TEXT")
+	private String expiryDaysAccessToken;
 	
-	@Column(name = "expiry_days_refresh_token")
-	private Long expiryDaysRefreshToken;
+	@Column(name = "expiry_days_refresh_token", columnDefinition = "TEXT")
+	private String expiryDaysRefreshToken;
 	
-	@Column(name = "regist_date", length = 20, nullable = true)
+	@Column(name = "regist_date", columnDefinition = "TEXT")
 	private String registDate;
 
-	@Column(name = "regist_pname", length = 50)
+	@Column(name = "regist_pname", columnDefinition = "TEXT")
 	private String registPName;
 
-	@Column(name = "last_update_date", length = 20, nullable = true)
+	@Column(name = "last_update_date", columnDefinition = "TEXT")
 	private String lastUpdateDate;
 
-	@Column(name = "last_update_pname", length = 50)
+	@Column(name = "last_update_pname", columnDefinition = "TEXT")
 	private String lastUpdatePName;
 	
 	public JsonWebToken() {
 		super();
 	}
 
-	public JsonWebToken(String userId, String accessToken, String refreshToken, Long expiryDaysAccessToken,
-			Long expiryDaysRefreshToken, String registDate, String registPName, String lastUpdateDate,
+	public JsonWebToken(String userId, String accessToken, String refreshToken, String expiryDaysAccessToken,
+			String expiryDaysRefreshToken, String registDate, String registPName, String lastUpdateDate,
 			String lastUpdatePName) {
 		super();
 		this.userId = userId;
@@ -80,19 +80,19 @@ public class JsonWebToken {
 		this.refreshToken = refreshToken;
 	}
 
-	public Long getExpiryDaysAccessToken() {
+	public String getExpiryDaysAccessToken() {
 		return expiryDaysAccessToken;
 	}
 
-	public void setExpiryDaysAccessToken(Long expiryDaysAccessToken) {
+	public void setExpiryDaysAccessToken(String expiryDaysAccessToken) {
 		this.expiryDaysAccessToken = expiryDaysAccessToken;
 	}
 
-	public Long getExpiryDaysRefreshToken() {
+	public String getExpiryDaysRefreshToken() {
 		return expiryDaysRefreshToken;
 	}
 
-	public void setExpiryDaysRefreshToken(Long expiryDaysRefreshToken) {
+	public void setExpiryDaysRefreshToken(String expiryDaysRefreshToken) {
 		this.expiryDaysRefreshToken = expiryDaysRefreshToken;
 	}
 

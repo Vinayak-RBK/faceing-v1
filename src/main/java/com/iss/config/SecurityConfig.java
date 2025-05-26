@@ -27,13 +27,16 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.cors(Customizer.withDefaults()) // enable CORS
 				.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/login", "/signup", "/verifySignupOtp", "/forgotPassword",
-								"/verifyForGetPasOtp", "/resetPassword", "/superAdminLogin", "/superAdminSignup",
-								"/verifySuperAdminSignupOtp", "/superAdminForgetPassword",
-								"/verifyOtpForSuperAdminForgetPas", "/resetSuperAdminPassword",
-								"/getTokenByRefreshToken/**", "/sendAllOnboardingQuestions")
-						.permitAll().anyRequest().authenticated())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/signup", "/verifySignupOtp",
+						"/forgotPassword", "/verifyForGetPasOtp", "/resetPassword", "/superAdminLogin",
+						"/superAdminSignup", "/verifySuperAdminSignupOtp", "/superAdminForgetPassword",
+						"/verifyOtpForSuperAdminForgetPas", "/resetSuperAdminPassword", "/getTokenByRefreshToken/**",
+						"/sendAllOnboardingQuestions", "/addGuest", "/sendAllUserDetails", "/userSDKData",
+						"/listOfGuest/**", "/perGuestHistory", "/userHealthHistory", "/perHealthHistory",
+						"/addEmployee", "/getDetail/**", "/ban/**", "/updateUserByAdmin/**", "/downloadExcel/**",
+						"/addQuestion", "/deleteQuestion/**", "/modifyQuestion", "/getDashBoradData", "/loginJWT",
+						"/removeGuest", "/editProfile/**", "/listOfGuestByUserId", "/GuestdownloadExcel/**","/getHealthHistoryList").permitAll()
+						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

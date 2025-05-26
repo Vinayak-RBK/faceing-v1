@@ -2,8 +2,6 @@ package com.iss.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,30 +17,37 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iss.dao.AdminOperationResponseDao;
 import com.iss.dao.AdminUserPersonalDetailsDao;
-import com.iss.dao.BasicHealthQuestionDao;
+import com.iss.dao.PagerRequestDao;
+import com.iss.dao.PagerResponseDao;
 import com.iss.dao.PersonalDetailsForAdminPanelDao;
 import com.iss.dao.Response;
 import com.iss.dao.UserDao;
-import com.iss.dao.UserHealthDetailsDao;
+import com.iss.dao.UserHealthAnuraDetailsDao;
+import com.iss.dao.UserHealthBinahDetailsDao;
 import com.iss.dao.UserPersonalAndHealthDetailsDao;
 import com.iss.dao.UserSearchResponseDao;
 import com.iss.entity.CommonUserDetailsTable;
 import com.iss.entity.EndUser;
+import com.iss.entity.UserHealthAnuraDetail;
+import com.iss.entity.UserHealthBinahDetail;
 import com.iss.entity.UserHealthOnboardingDetail;
-import com.iss.entity.UserPersonalAndHealthDetails;
 import com.iss.entity.UsersPersonalDetails;
+import com.iss.repository.LoginUserRepositoryImp;
+import com.iss.repository.UserHealthAnuraDetailsRepo;
+import com.iss.repository.UserHealthBinahDetailsRepo;
 import com.iss.repository.UserPersonalDetailsRepository;
 import com.iss.repository.UserRepository;
+import com.iss.util.EncryptedDecryptedObjectUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -77,15 +82,39 @@ public class UserSearchServiceImpl implements UserSearchService {
 	@Value("${EXCEL_CONTENT_TYPE}")
 	private String excepContentType;
 
+	@Value("${SOMETHING_WENT_WRONG}")
+	private String someThingWentWrong;
+
+	@Value("${WRONG_USERID_RECEIVED}")
+	private String wrongUserId;
+
+	@Value("${SECRET_KEY}")
+	private String secretKey;
+
+	@Value("${SECRET_IV}")
+	private String secretIv;
+
+	@Value("${IS_ENCRYPT_DECRYPT_ENABLE_DATABASE_DATA}")
+	private boolean isEncryptDecryptDatabaseData;
+
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
+	private UserHealthAnuraDetailsRepo userHealthAnuraRepo;
+
+	@Autowired
+	private UserHealthBinahDetailsRepo userHealthBinahRepo;
+
+	@Autowired
 	private UserPersonalDetailsRepository userPersDetailsRepo;
 
-	private List<UserPersonalAndHealthDetails> perHealthDetailsList = new ArrayList<UserPersonalAndHealthDetails>();
+	@Autowired
+	private LoginUserRepositoryImp loginUserRepositoryImp;
 
-	private List<UserHealthOnboardingDetail> userHOnBoardDetailsList = new ArrayList<UserHealthOnboardingDetail>();
+	private List<UserHealthAnuraDetail> userHealthAnuraDetailsList = new ArrayList<UserHealthAnuraDetail>();
+
+	private List<UserHealthBinahDetail> userHealthBinahDetailsList = new ArrayList<UserHealthBinahDetail>();
 
 	private UserPersonalAndHealthDetailsDao listDao = new UserPersonalAndHealthDetailsDao();
 
@@ -93,27 +122,74 @@ public class UserSearchServiceImpl implements UserSearchService {
 
 	private Response response = new Response();
 
+	@SuppressWarnings("removal")
 	@Override
-	public List<UserSearchResponseDao> getAllUserDetails(String dateTimeFormat) {
-		List<CommonUserDetailsTable> entList = userRepository.searchUserListDetails();
+	public PagerResponseDao getAllUserDetails(String dateTimeFormat, PagerRequestDao pagerDao) {
+		PagerResponseDao respDao = new PagerResponseDao();
+		CommonUserDetailsTable enEnt = new CommonUserDetailsTable();
+		UserSearchResponseDao dto = new UserSearchResponseDao();
 		List<UserSearchResponseDao> dtoList = new ArrayList<>();
+		List<CommonUserDetailsTable> entList = new ArrayList<CommonUserDetailsTable>();
+		int totalUsersCount = 0;
+
+		// offset Value
+		int pageNo = new Integer(pagerDao.getPageNo());
+
+		// size
+		int size = new Integer(pagerDao.getPageSize());
+
+		totalUsersCount = (int) loginUserRepositoryImp.getCountOfUsers("true", pagerDao);
+
+		if (totalUsersCount == 0) {
+			respDao.setSuccess(Boolean.toString(false));
+			respDao.setMsg("User records not found...");
+			return respDao;
+		}
+
+		entList = loginUserRepositoryImp.getPersonalDetailsOfUsers("true", pagerDao, size, (pageNo - 1) * size);
 
 		for (CommonUserDetailsTable ent : entList) {
-			UserSearchResponseDao dto = new UserSearchResponseDao();
-			dto.setName(ent.getUserName());
-			dto.setGender(ent.getUserGender());
-			dto.setWeight(ent.getUserWeight());
-			dto.setEmail(ent.getUserEmail());
-			dto.setDob(ent.getUserDOB());
-			dto.setHeight(ent.getUserHeight());
+			enEnt = new CommonUserDetailsTable();
+			dto = new UserSearchResponseDao();
 			dto.setId(ent.getUserId());
-			dto.setImage(ent.getUserImage());
-			dto.setStatus(ent.getIsBlocked());
-			dto.setAge(getAgeDifferencesByDates(ent.getUserDOB()));
+
+			try {
+				enEnt = (CommonUserDetailsTable) EncryptedDecryptedObjectUtil.getDecryptedObject(ent, secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+			} catch (Exception e) {
+				return null;
+			}
+
+			dto.setName(enEnt.getUserName());
+			dto.setPassword(enEnt.getPassword());
+			dto.setGender(enEnt.getUserGender());
+			dto.setWeight(enEnt.getUserWeight());
+			dto.setEmail(enEnt.getUserEmail());
+			dto.setDob(enEnt.getUserDOB());
+			dto.setHeight(enEnt.getUserHeight());
+//			dto.setImage(enEnt.getUserImage());
+			dto.setStatus(enEnt.getIsBlocked());
+			dto.setAge(Float.toString(getAgeDifferencesByDates(enEnt.getUserDOB())));
+			dto.setRole(enEnt.getJobRole());
 
 			dtoList.add(dto);
 		}
-		return dtoList;
+
+		respDao.setSuccess("true");
+		if (dtoList.isEmpty()) {
+			respDao.setMsg("User records not found...");
+			respDao.setSuccess("false");
+		} else {
+			respDao.setPerDetailsList(dtoList);
+			respDao.setTotalCount(Integer.toString(totalUsersCount));
+			double b = (double) totalUsersCount / (double) size;
+			respDao.setNoOfPages((new Integer((int) Math.ceil(b))).toString());
+			respDao.setCurPageNo(pagerDao.getPageNo());
+			respDao.setMsg("Successfully sent...");
+			respDao.setSuccess("true");
+		}
+
+		return respDao;
 	}
 
 	private float getAgeDifferencesByDates(String dob) {
@@ -140,30 +216,47 @@ public class UserSearchServiceImpl implements UserSearchService {
 		Optional<EndUser> user = userRepository.findById(userId);
 
 		if (user.isEmpty()) {
-			resDao.setSuccess(false);
-			resDao.setMsg("Unable To Block/Unblock User");
+			resDao.setSuccess(Boolean.toString(false));
+			resDao.setMsg(wrongUserId);
 			return resDao;
 		}
+		String decIsBlocked = "";
+		String enIsBlocked = "";
+		Boolean isBlocked = false;
 
-		Boolean isBlocked = user.get().getIsBlocked();
+		try {
+			decIsBlocked = (String) EncryptedDecryptedObjectUtil.getDecryptedString(user.get().getIsBlocked(),
+					secretKey, secretIv, isEncryptDecryptDatabaseData);
 
-		if (isBlocked) {
-			user.get().setIsBlocked(false);
-		} else {
-			user.get().setIsBlocked(true);
+			isBlocked = Boolean.parseBoolean(decIsBlocked);
+
+			if (isBlocked) {
+				enIsBlocked = (String) EncryptedDecryptedObjectUtil.getEncryptedString(Boolean.toString(false),
+						secretKey, secretIv, isEncryptDecryptDatabaseData);
+				user.get().setIsBlocked(enIsBlocked);
+			} else {
+				enIsBlocked = (String) EncryptedDecryptedObjectUtil.getEncryptedString(Boolean.toString(true),
+						secretKey, secretIv, isEncryptDecryptDatabaseData);
+				user.get().setIsBlocked(enIsBlocked);
+			}
+			userRepository.save(user.get());
+
+		} catch (Exception e) {
+			resDao.setSuccess(Boolean.toString(false));
+			resDao.setMsg(someThingWentWrong + e);
+			return resDao;
 		}
-		userRepository.save(user.get());
 
 		String status = isBlocked ? "Active" : "Inactive";
 
 		resDao.setBlockStatus(status);
 
 		if (isBlocked) {
-			resDao.setSuccess(true);
+			resDao.setSuccess(Boolean.toString(true));
 			resDao.setMsg(UNblockUserId);
 			return resDao;
 		} else {
-			resDao.setSuccess(true);
+			resDao.setSuccess(Boolean.toString(true));
 			resDao.setMsg(blockUserId);
 			return resDao;
 		}
@@ -176,81 +269,113 @@ public class UserSearchServiceImpl implements UserSearchService {
 	public UserPersonalAndHealthDetailsDao getUserDetailsByUserId(Long userId) {
 
 		UserDao userDao = new UserDao();
+		UserDao enUserDao = new UserDao();
 		PersonalDetailsForAdminPanelDao perDao = new PersonalDetailsForAdminPanelDao();
-		UserHealthDetailsDao userHealthDao = new UserHealthDetailsDao();
-		List<UserHealthDetailsDao> userHealthDaoList = new ArrayList<UserHealthDetailsDao>();
-		List<BasicHealthQuestionDao> quesListDao = new ArrayList<BasicHealthQuestionDao>();
 
-		Optional<EndUser> user = userRepository.findById(userId);
-		if (user.isEmpty()) {
-			response.setSuccess(false);
-			response.setMsg("Records doesnot exists");
-			listDao.setResponse(response);
-			return listDao;
-		} else {
-			userPerDDetails = userPersDetailsRepo.getByUserId(user.get().getUserId());
+		UserHealthAnuraDetailsDao userHealthAnuraDao = new UserHealthAnuraDetailsDao();
+		UserHealthAnuraDetailsDao enUserHealthAnuraDao = new UserHealthAnuraDetailsDao();
+		List<UserHealthAnuraDetailsDao> userHealthAnuraDaoList = new ArrayList<UserHealthAnuraDetailsDao>();
 
-			if (StringUtils.isEmpty(userPerDDetails)) {
-				response.setSuccess(false);
-				response.setMsg("Onboarding is not done for the user");
+		UserHealthBinahDetailsDao userHealthBinahDao = new UserHealthBinahDetailsDao();
+		UserHealthBinahDetailsDao decUserHealthBinahDao = new UserHealthBinahDetailsDao();
+		List<UserHealthBinahDetailsDao> userHealthBinahDaoList = new ArrayList<UserHealthBinahDetailsDao>();
+
+		ModelMapper mapper = new ModelMapper();
+
+		try {
+			Optional<EndUser> user = userRepository.findById(userId);
+			if (user.isEmpty()) {
+				response.setSuccess(Boolean.toString(false));
+				response.setMsg("Records doesnot exists");
 				listDao.setResponse(response);
 				return listDao;
+			} else {
+				userPerDDetails = userPersDetailsRepo.getByUserId(user.get().getUserId());
+
+				if (StringUtils.isEmpty(userPerDDetails)) {
+					response.setSuccess(Boolean.toString(false));
+					response.setMsg("Onboarding is not done for the user");
+					listDao.setResponse(response);
+					return listDao;
+				}
 			}
+
+			String sDKType = (String) EncryptedDecryptedObjectUtil.getDecryptedString(user.get().getsDKType(),
+					secretKey, secretIv, isEncryptDecryptDatabaseData);
+
+			if (userPerDDetails != null) {
+				perDao.setEmail(userPerDDetails.getUserEmail());
+				perDao.setPassword(user.get().getUserPassword());
+				perDao.setDob(userPerDDetails.getUserDOB());
+				perDao.setGender(userPerDDetails.getUserGender());
+				perDao.setHeight(userPerDDetails.getUserHeight());
+				perDao.setWeight(userPerDDetails.getUserWeight());
+				perDao.setName(userPerDDetails.getUserName());
+				perDao.setImage(userPerDDetails.getUserImage());
+				perDao.setAge(Float.toString(getAgeDifferencesByDates(userPerDDetails.getUserDOB())));
+			}
+
+			else {
+				response.setSuccess(Boolean.toString(false));
+				response.setMsg("Personal details not found.");
+				return listDao;
+			}
+
+			userDao.setUserId(user.get().getUserId().toString());
+			userDao.setEmailId(user.get().getUserEmail());
+
+			if ("ANURA".equals(sDKType)) {
+				userHealthAnuraDetailsList = userHealthAnuraRepo.findByUserId(user.get().getUserId().toString());
+
+				for (UserHealthAnuraDetail ent : userHealthAnuraDetailsList) {
+
+					userHealthAnuraDao = new UserHealthAnuraDetailsDao();
+
+					// mapping user health data from entity to dao class
+					userHealthAnuraDao = mapper.map(ent, UserHealthAnuraDetailsDao.class);
+
+					enUserHealthAnuraDao = (UserHealthAnuraDetailsDao) EncryptedDecryptedObjectUtil
+							.getDecryptedObject(userHealthAnuraDao, secretKey, secretIv, isEncryptDecryptDatabaseData);
+
+					userHealthAnuraDaoList.add(enUserHealthAnuraDao);
+				}
+			} else if ("BINAH".equals(sDKType)) {
+
+				userHealthBinahDetailsList = userHealthBinahRepo.findByUserId(user.get().getUserId().toString());
+
+				for (UserHealthBinahDetail ent : userHealthBinahDetailsList) {
+
+					userHealthBinahDao = new UserHealthBinahDetailsDao();
+
+					// mapping user health data from entity to dao class
+					userHealthBinahDao = mapper.map(ent, UserHealthBinahDetailsDao.class);
+
+					decUserHealthBinahDao = (UserHealthBinahDetailsDao) EncryptedDecryptedObjectUtil
+							.getDecryptedObject(userHealthBinahDao, secretKey, secretIv, isEncryptDecryptDatabaseData);
+
+					userHealthBinahDaoList.add(decUserHealthBinahDao);
+				}
+
+			}
+
+			enUserDao = (UserDao) EncryptedDecryptedObjectUtil.getDecryptedObject(userDao, secretKey, secretIv,
+					isEncryptDecryptDatabaseData);
+			listDao.setUserDao(enUserDao);
+			listDao.setUserPerDao(perDao);
+
+			listDao.setUserHealthAnuraDao(userHealthAnuraDaoList);
+			listDao.setUserHealthBinahDao(userHealthBinahDaoList);
+			response.setSuccess(Boolean.toString(true));
+			response.setMsg("Sending records");
+			listDao.setResponse(response);
+
+			return listDao;
+		} catch (Exception e) {
+			response.setSuccess(Boolean.toString(false));
+			response.setMsg(someThingWentWrong + e);
+			listDao.setResponse(response);
+			return listDao;
 		}
-
-		perHealthDetailsList = userRepository.getUserDetailsByUserId(userId);
-		userHOnBoardDetailsList = userRepository.getUserHealthOnboardingByUserId(userId);
-
-		userDao.setUserId(user.get().getUserId().toString());
-		userDao.setEmailId(user.get().getUserEmail());
-
-		if (userPerDDetails != null) {
-			perDao.setEmail(userPerDDetails.getUserEmail());
-			perDao.setPassword(user.get().getUserPassword());
-			perDao.setDob(userPerDDetails.getUserDOB());
-			perDao.setGender(userPerDDetails.getUserGender());
-			perDao.setHeight(userPerDDetails.getUserHeight().doubleValue());
-			perDao.setWeight(userPerDDetails.getUserWeight().doubleValue());
-			perDao.setName(userPerDDetails.getUserName());
-			perDao.setImage(userPerDDetails.getUserImage());
-		}
-
-		for (UserPersonalAndHealthDetails ent : perHealthDetailsList) {
-			userHealthDao = new UserHealthDetailsDao();
-			userHealthDao.setAge(ent.getUserAge());
-//			userHealthDao.setBloodPressure(ent.getUserBloodPressure());
-//			userHealthDao.setBodyMassIndex(ent.getUserBodyMassIndex());
-//			userHealthDao.setBodyShapeIndex(ent.getUserBodyShapeIndex());
-//			userHealthDao.setEnergyLevel(ent.getUserEnergyLevel());
-//			userHealthDao.setVo2Max(ent.getUserFitnessLevel());
-//			userHealthDao.setUserHeartRate(ent.getUserHeartRate());
-//			userHealthDao.setSkinTemperature(ent.getUserOxygenSaturation());
-//			userHealthDao.setUserHRVData(ent.getUserHRVData());
-//			userHealthDao.setOxygenSaturation(ent.getUserOxygenSaturation());
-//			userHealthDao.setRelaxationLevel(ent.getUserRelaxationLevel());
-//			userHealthDao.setHemoglobinLevel(ent.getUserHemoglobinLevel());
-//			userHealthDao.setStressLevel(ent.getUserStressLevel());
-//			userHealthDao.setRespirationRate(ent.getUserRespirationRate());
-//			userHealthDaoList.add(userHealthDao);
-		}
-
-		for (UserHealthOnboardingDetail ent : userHOnBoardDetailsList) {
-			BasicHealthQuestionDao dao = new BasicHealthQuestionDao();
-			dao.setId(ent.getId().toString());
-			dao.setAnswer(ent.getOnboardingAnswerValue());
-			quesListDao.add(dao);
-
-		}
-
-		listDao.setUserDao(userDao);
-		listDao.setUserPerDao(perDao);
-		listDao.setUserHealthDao(userHealthDaoList);
-		listDao.setQuestionsDao(quesListDao);
-		response.setSuccess(true);
-		response.setMsg("Sending records");
-		listDao.setResponse(response);
-
-		return listDao;
 	}
 
 	@SuppressWarnings("removal")
@@ -261,27 +386,59 @@ public class UserSearchServiceImpl implements UserSearchService {
 		int res = 0;
 		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFormat);
 		String currentDate = sdf.format(new Date());
-
+		//String enConvertedDobFromAge = "";
+		String enGender = "";
+		String enHeight = "";
+		String enName = "";
+		String enWeight = "";
+		String encurrentDate = "";
+		String enUpdatePName = "";
+		
+		String enDob="";
+		 
 		UsersPersonalDetails user = userPersDetailsRepo.getByUserId(new Long(dao.getUserId()));
 
 		if (user == null) {
 			respdao.setMessage(personalDetailsNoexists);
-			respdao.setSuccess(false);
+			respdao.setSuccess(Boolean.toString(false));
 			return respdao;
 		} else {
 			// converting age into dob
-			String convertedDobFromAge = updateDobByAge(dao.getAge());
+//			String convertedDobFromAge = updateDobByAge(Integer.parseInt(dao.getAge()));
 
-			res = userRepository.updateUserByUserId(dao.getGender(), new BigDecimal(dao.getHeight()), dao.getName(),
-					convertedDobFromAge, new BigDecimal(dao.getWeight()), currentDate, this.getClass().getSimpleName(),
-					new Long(dao.getUserId()));
+			try {
+//				enConvertedDobFromAge = (String) EncryptedDecryptedObjectUtil.getEncryptedString(convertedDobFromAge,
+//						secretKey, secretIv, isEncryptDecryptDatabaseData);
+				enGender = (String) EncryptedDecryptedObjectUtil.getEncryptedString(dao.getGender(), secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+				enDob = (String) EncryptedDecryptedObjectUtil.getEncryptedString(dao.getDob(), secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+				enHeight = (String) EncryptedDecryptedObjectUtil.getEncryptedString(dao.getHeight(), secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+				enName = (String) EncryptedDecryptedObjectUtil.getEncryptedString(dao.getName(), secretKey, secretIv,
+						isEncryptDecryptDatabaseData);
+				enWeight = (String) EncryptedDecryptedObjectUtil.getEncryptedString(dao.getWeight(), secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+				encurrentDate = (String) EncryptedDecryptedObjectUtil.getEncryptedString(currentDate, secretKey,
+						secretIv, isEncryptDecryptDatabaseData);
+				enUpdatePName = (String) EncryptedDecryptedObjectUtil.getEncryptedString(
+						this.getClass().getSimpleName(), secretKey, secretIv, isEncryptDecryptDatabaseData);
+			} catch (Exception e) {
+				respdao.setMessage("Error occurred while encrypting the Data to Database");
+				respdao.setSuccess(Boolean.toString(false));
+
+				return respdao;
+			}
+
+			res = userRepository.updateUserByUserId(enGender, enHeight, enName, enDob, enWeight,
+					encurrentDate, enUpdatePName, new Long(dao.getUserId()));
 
 			if (res == 0) {
 				respdao.setMessage(Unableupdateuser);
-				respdao.setSuccess(false);
+				respdao.setSuccess(Boolean.toString(false));
 			} else {
 				respdao.setMessage(updatedSuccess);
-				respdao.setSuccess(true);
+				respdao.setSuccess(Boolean.toString(true));
 			}
 			respdao.setUserId(dao.getUserId());
 
@@ -298,28 +455,42 @@ public class UserSearchServiceImpl implements UserSearchService {
 		int year = localDate.getYear();
 
 		LocalDate inputDate = LocalDate.of(year - age, month, dat);
-		return inputDate.toString();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		return inputDate.format(formatter);
+//		return inputDate.toString();
 	}
 
 	@Override
 	public Response getUserDetailsByExcel(Long userId, HttpServletResponse response) {
 		Response resp = new Response();
+		boolean isSDKTypeAnura = false;
 
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormatExportedFiles);
 		String formattedDate = now.format(formatter);
 
+		List<UserHealthAnuraDetail> userHealthAnuraList = new ArrayList<UserHealthAnuraDetail>();
+		List<UserHealthBinahDetail> userHealthBinahList = new ArrayList<UserHealthBinahDetail>();
+
+		UserHealthAnuraDetail enUserHealthAnuraDetail = new UserHealthAnuraDetail();
+		UserHealthBinahDetail enUserHealthBinahDetail = new UserHealthBinahDetail();
+
 		try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
 			CommonUserDetailsTable user = userPersDetailsRepo.findUserPersonalDetailsByUserId(userId);
-			List<UserPersonalAndHealthDetails> userDetailsList = userRepository.getUserDetailsByUserId(userId);
+//			List<UserPersonalAndHealthDetails> userDetailsList = userRepository.getUserDetailsByUserId(userId);
+
 			List<UserHealthOnboardingDetail> userHealthOnboardingList = userRepository
 					.getUserHealthOnboardingByUserId(userId);
 
 			if (user == null) {
 				resp.setMsg("No user data found.");
-				resp.setSuccess(false);
+				resp.setSuccess(Boolean.toString(false));
 				return resp;
 			}
+
+			String enSDKType = (String) EncryptedDecryptedObjectUtil.getEncryptedString(user.getsDKType(), secretKey,
+					secretIv, isEncryptDecryptDatabaseData);
 
 			// Create a single sheet
 			Sheet sheet = workbook.createSheet(userDetails);
@@ -334,7 +505,21 @@ public class UserSearchServiceImpl implements UserSearchService {
 			headersList.add("Weight");
 
 			for (UserHealthOnboardingDetail ent : userHealthOnboardingList) {
-				headersList.add(ent.getOnboardingQuestionName());
+//				UserHealthOnboardingDetail enEnt = new UserHealthOnboardingDetail();
+				String enQName = "";
+				try {
+
+//					enEnt = (UserHealthOnboardingDetail) EncryptedDecryptedObjectUtil.getDecryptedObject(ent, secretKey,
+//							secretIv, isEncryptDecryptDatabaseData);
+
+					enQName = (String) EncryptedDecryptedObjectUtil.getDecryptedString(ent.getOnboardingQuestionName(),
+							secretKey, secretIv, isEncryptDecryptDatabaseData);
+				} catch (Exception e) {
+					resp.setMsg(someThingWentWrong);
+					resp.setSuccess(Boolean.toString(false));
+					return resp;
+				}
+				headersList.add(enQName);
 			}
 
 			String[] headers = headersList.toArray(new String[0]);
@@ -351,16 +536,9 @@ public class UserSearchServiceImpl implements UserSearchService {
 			writeUserDetails(row, user, userHealthOnboardingList);
 
 			List<String> healthHeaderList = new ArrayList<>();
-			healthHeaderList.add("UserBloodPressure");
-			healthHeaderList.add("UserBodyMassIndex");
-			healthHeaderList.add("UserEnergyLevel");
-			healthHeaderList.add("UserFitnessLevel");
-			healthHeaderList.add("UserRelaxationLevel");
-			healthHeaderList.add("UserHemoglobinLevel");
-			healthHeaderList.add("UserHRVData");
-			healthHeaderList.add("UserOxygenSaturation");
-			healthHeaderList.add("UserRespirationRate");
-			healthHeaderList.add("UserStressLevel");
+
+			// Setting header either for Anura or Binah based on the SDK Type
+			setHeaderList(enSDKType, healthHeaderList);
 
 			String[] healthHeaders = healthHeaderList.toArray(new String[0]);
 
@@ -370,9 +548,42 @@ public class UserSearchServiceImpl implements UserSearchService {
 				healthHeaderRow.createCell(i).setCellValue(healthHeaders[i]);
 			}
 			rowNum = rowNum + 1;
-			for (UserPersonalAndHealthDetails userHealth : userDetailsList) {
-				Row rowHealth = sheet.createRow(rowNum++);
-				writeHealthDetails(rowHealth, userHealth);
+
+			// to fetch health details either Anura or Binah
+
+			if ("ANURA".equals(enSDKType)) {
+				isSDKTypeAnura = true;
+				userHealthAnuraList = userHealthAnuraRepo.findByUserId(userId.toString());
+
+				for (UserHealthAnuraDetail userHealth : userHealthAnuraList) {
+					Row rowHealth = sheet.createRow(rowNum++);
+					try {
+						userHealth.setEndUser(null);
+						enUserHealthAnuraDetail = (UserHealthAnuraDetail) EncryptedDecryptedObjectUtil
+								.getDecryptedObject(userHealth, secretKey, secretIv, isEncryptDecryptDatabaseData);
+					} catch (Exception e) {
+						resp.setMsg(someThingWentWrong);
+						resp.setSuccess(Boolean.toString(false));
+						return resp;
+					}
+					writeHealthDetails(rowHealth, enUserHealthAnuraDetail, isSDKTypeAnura);
+				}
+			} else if ("BINAH".equals(enSDKType)) {
+				userHealthBinahList = userHealthBinahRepo.findByUserId(userId.toString());
+
+				for (UserHealthBinahDetail userHealth : userHealthBinahList) {
+					Row rowHealth = sheet.createRow(rowNum++);
+					try {
+						userHealth.setEndUser(null);
+						enUserHealthBinahDetail = (UserHealthBinahDetail) EncryptedDecryptedObjectUtil
+								.getDecryptedObject(userHealth, secretKey, secretIv, isEncryptDecryptDatabaseData);
+					} catch (Exception e) {
+						resp.setMsg(someThingWentWrong);
+						resp.setSuccess(Boolean.toString(false));
+						return resp;
+					}
+					writeHealthDetails(rowHealth, enUserHealthBinahDetail, isSDKTypeAnura);
+				}
 			}
 
 			// Convert workbook to byte array
@@ -396,46 +607,178 @@ public class UserSearchServiceImpl implements UserSearchService {
 			workbook.write(response.getOutputStream());
 
 			resp.setMsg("Excel file is generated successfully.");
-			resp.setSuccess(true);
+			resp.setSuccess(Boolean.toString(true));
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			resp.setMsg("Unbale to export the file.");
-			resp.setSuccess(false);
+			resp.setSuccess(Boolean.toString(false));
 		}
 		return resp;
 	}
 
+	private void setHeaderList(String enSDKType, List<String> healthHeaderList) {
+		if ("ANURA".equals(enSDKType)) {
+
+			healthHeaderList.add("Age");
+			healthHeaderList.add("hRBPM");
+			healthHeaderList.add("bPSystolic");
+			healthHeaderList.add("hRVSDNN");
+			healthHeaderList.add("bPRPP");
+			healthHeaderList.add("bPTau");
+			healthHeaderList.add("healthScore");
+			healthHeaderList.add("mentalScore");
+			healthHeaderList.add("vitalScore");
+			healthHeaderList.add("physicalScore");
+			healthHeaderList.add("mSI");
+			healthHeaderList.add("bpHeartAttack");
+			healthHeaderList.add("bPStroke");
+			healthHeaderList.add("bPCVD");
+			healthHeaderList.add("risksScore");
+			healthHeaderList.add("sNR");
+			healthHeaderList.add("bRBPM");
+			healthHeaderList.add("bpDiastolic");
+			healthHeaderList.add("iHBCount");
+			healthHeaderList.add("hBA1CRiskProb");
+			healthHeaderList.add("mFBGRiskProb");
+			healthHeaderList.add("dBTRiskProb");
+			healthHeaderList.add("fLDRiskProb");
+			healthHeaderList.add("hDLTCRiskProb");
+			healthHeaderList.add("hPTRiskProb");
+			healthHeaderList.add("overallMetabolicRiskProb");
+			healthHeaderList.add("tGRiskProb");
+			healthHeaderList.add("physioScore");
+		} else if ("BINAH".equals(enSDKType)) {
+			healthHeaderList.add("pulseRate");
+			healthHeaderList.add("respirationRate");
+			healthHeaderList.add("oxygenSaturation");
+			healthHeaderList.add("sdnn");
+			healthHeaderList.add("stressLevel");
+			healthHeaderList.add("rri");
+			healthHeaderList.add("bloodPressure");
+			healthHeaderList.add("stressIndex");
+			healthHeaderList.add("meanRri");
+			healthHeaderList.add("rmssd");
+			healthHeaderList.add("sd1");
+			healthHeaderList.add("sd2");
+			healthHeaderList.add("prq");
+			healthHeaderList.add("pnsIndex");
+			healthHeaderList.add("pnsZone");
+			healthHeaderList.add("snsIndex");
+			healthHeaderList.add("snsZone");
+			healthHeaderList.add("wellnessIndex");
+			healthHeaderList.add("wellnessLevel");
+			healthHeaderList.add("lfhf");
+			healthHeaderList.add("hemoglobin");
+			healthHeaderList.add("hemoglobinA1C");
+			healthHeaderList.add("highHemoglobinA1CRisk");
+			healthHeaderList.add("highBloodPressureRisk");
+			healthHeaderList.add("ascvdRisk");
+			healthHeaderList.add("normalizedStressIndex");
+			healthHeaderList.add("heartAge");
+			healthHeaderList.add("highTotalCholesterolRisk");
+			healthHeaderList.add("highFastingGlucoseRisk");
+			healthHeaderList.add("lowHemoglobinRisk");
+		}
+	}
+
 	private void writeUserDetails(Row row, CommonUserDetailsTable user, List<UserHealthOnboardingDetail> healthList) {
 
+		CommonUserDetailsTable enUser = new CommonUserDetailsTable();
+		try {
+			enUser = (CommonUserDetailsTable) EncryptedDecryptedObjectUtil.getDecryptedObject(user, secretKey, secretIv,
+					isEncryptDecryptDatabaseData);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ObjectMapper objectMapper = new ObjectMapper();
-		row.createCell(0).setCellValue(user.getUserName());
-		row.createCell(1).setCellValue(user.getUserEmail());
-		row.createCell(2).setCellValue(user.getUserGender());
-		row.createCell(3).setCellValue(user.getUserDOB());
-		row.createCell(4).setCellValue(user.getUserHeight().toString());
-		row.createCell(5).setCellValue(user.getUserWeight().toString());
+		row.createCell(0).setCellValue(enUser.getUserName());
+		row.createCell(1).setCellValue(enUser.getUserEmail());
+		row.createCell(2).setCellValue(enUser.getUserGender());
+		row.createCell(3).setCellValue(enUser.getUserDOB());
+		row.createCell(4).setCellValue(enUser.getUserHeight());
+		row.createCell(5).setCellValue(enUser.getUserWeight());
 
 		for (int i = 0; i < healthList.size(); i++) {
 			try {
 				row.createCell(6 + i)
 						.setCellValue(objectMapper.writeValueAsString(healthList.get(i).getOnboardingAnswerValue()));
-			} catch (JsonProcessingException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
 	}
 
-	private void writeHealthDetails(Row row, UserPersonalAndHealthDetails user) {
-		row.createCell(0).setCellValue(user.getUserBloodPressure().toString());
-		row.createCell(1).setCellValue(user.getUserBodyMassIndex().toString());
-		row.createCell(2).setCellValue(user.getUserEnergyLevel().toString());
-		row.createCell(3).setCellValue(user.getUserFitnessLevel().toString());
-		row.createCell(4).setCellValue(user.getUserRelaxationLevel().toString());
-		row.createCell(5).setCellValue(user.getUserHemoglobinLevel().toString());
-		row.createCell(6).setCellValue(user.getUserHRVData().toString());
-		row.createCell(7).setCellValue(user.getUserOxygenSaturation().toString());
-		row.createCell(8).setCellValue(user.getUserRespirationRate().toString());
-		row.createCell(9).setCellValue(user.getUserStressLevel().toString());
+	private void writeHealthDetails(Row row, Object obj, boolean isSDKTypeAnura) {
+		UserHealthAnuraDetail userHealthAnuraDetail = new UserHealthAnuraDetail();
+		UserHealthBinahDetail userHealthBinahDetail = new UserHealthBinahDetail();
+
+		if (isSDKTypeAnura) {
+			userHealthAnuraDetail = (UserHealthAnuraDetail) obj;
+
+			row.createCell(0).setCellValue(userHealthAnuraDetail.getAge());
+			row.createCell(1).setCellValue(userHealthAnuraDetail.gethRBPM());
+			row.createCell(2).setCellValue(userHealthAnuraDetail.getbPSystolic());
+			row.createCell(3).setCellValue(userHealthAnuraDetail.gethRVSDNN());
+			row.createCell(4).setCellValue(userHealthAnuraDetail.getbPRPP());
+			row.createCell(5).setCellValue(userHealthAnuraDetail.getbPTau());
+			row.createCell(6).setCellValue(userHealthAnuraDetail.getHealthScore());
+			row.createCell(7).setCellValue(userHealthAnuraDetail.getMentalScore());
+			row.createCell(8).setCellValue(userHealthAnuraDetail.getVitalScore());
+			row.createCell(9).setCellValue(userHealthAnuraDetail.getPhysicalScore());
+			row.createCell(10).setCellValue(userHealthAnuraDetail.getmSI());
+			row.createCell(11).setCellValue(userHealthAnuraDetail.getBpHeartAttack());
+			row.createCell(12).setCellValue(userHealthAnuraDetail.getbPStroke());
+			row.createCell(13).setCellValue(userHealthAnuraDetail.getbPCVD());
+			row.createCell(14).setCellValue(userHealthAnuraDetail.getRisksScore());
+			row.createCell(15).setCellValue(userHealthAnuraDetail.getsNR());
+			row.createCell(16).setCellValue(userHealthAnuraDetail.getbRBPM());
+			row.createCell(17).setCellValue(userHealthAnuraDetail.getBpDiastolic());
+			row.createCell(18).setCellValue(userHealthAnuraDetail.getiHBCount());
+			row.createCell(19).setCellValue(userHealthAnuraDetail.gethBA1CRiskProb());
+			row.createCell(20).setCellValue(userHealthAnuraDetail.getmFBGRiskProb());
+			row.createCell(21).setCellValue(userHealthAnuraDetail.getdBTRiskProb());
+			row.createCell(22).setCellValue(userHealthAnuraDetail.getfLDRiskProb());
+			row.createCell(23).setCellValue(userHealthAnuraDetail.gethDLTCRiskProb());
+			row.createCell(24).setCellValue(userHealthAnuraDetail.gethPTRiskProb());
+			row.createCell(25).setCellValue(userHealthAnuraDetail.getOverallMetabolicRiskProb());
+			row.createCell(26).setCellValue(userHealthAnuraDetail.gettGRiskProb());
+			row.createCell(26).setCellValue(userHealthAnuraDetail.getPhysioScore());
+
+		} else {
+			userHealthBinahDetail = (UserHealthBinahDetail) obj;
+
+			row.createCell(0).setCellValue(userHealthBinahDetail.getPulseRate());
+			row.createCell(1).setCellValue(userHealthBinahDetail.getRespirationRate());
+			row.createCell(2).setCellValue(userHealthBinahDetail.getOxygenSaturation());
+			row.createCell(3).setCellValue(userHealthBinahDetail.getSdnn());
+			row.createCell(4).setCellValue(userHealthBinahDetail.getStressLevel());
+			row.createCell(6).setCellValue(userHealthBinahDetail.getBloodPressure());
+			row.createCell(7).setCellValue(userHealthBinahDetail.getStressIndex());
+			row.createCell(8).setCellValue(userHealthBinahDetail.getMeanRri());
+			row.createCell(9).setCellValue(userHealthBinahDetail.getRmssd());
+			row.createCell(10).setCellValue(userHealthBinahDetail.getSd1());
+			row.createCell(11).setCellValue(userHealthBinahDetail.getSd2());
+			row.createCell(12).setCellValue(userHealthBinahDetail.getPrq());
+			row.createCell(13).setCellValue(userHealthBinahDetail.getPnsIndex());
+			row.createCell(14).setCellValue(userHealthBinahDetail.getPnsZone());
+			row.createCell(15).setCellValue(userHealthBinahDetail.getSnsIndex());
+			row.createCell(16).setCellValue(userHealthBinahDetail.getSnsZone());
+			row.createCell(17).setCellValue(userHealthBinahDetail.getWellnessIndex());
+			row.createCell(18).setCellValue(userHealthBinahDetail.getWellnessLevel());
+			row.createCell(19).setCellValue(userHealthBinahDetail.getLfhf());
+			row.createCell(20).setCellValue(userHealthBinahDetail.getHemoglobin());
+			row.createCell(21).setCellValue(userHealthBinahDetail.getHemoglobinA1C());
+			row.createCell(22).setCellValue(userHealthBinahDetail.getHighHemoglobinA1CRisk());
+			row.createCell(23).setCellValue(userHealthBinahDetail.getHighBloodPressureRisk());
+			row.createCell(24).setCellValue(userHealthBinahDetail.getAscvdRisk());
+			row.createCell(25).setCellValue(userHealthBinahDetail.getNormalizedStressIndex());
+			row.createCell(26).setCellValue(userHealthBinahDetail.getHeartAge());
+			row.createCell(27).setCellValue(userHealthBinahDetail.getHighTotalCholesterolRisk());
+			row.createCell(28).setCellValue(userHealthBinahDetail.getHighFastingGlucoseRisk());
+			row.createCell(29).setCellValue(userHealthBinahDetail.getLowHemoglobinRisk());
+		}
+
 	}
 
 }

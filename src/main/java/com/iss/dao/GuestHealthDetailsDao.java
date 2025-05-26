@@ -1,48 +1,66 @@
 package com.iss.dao;
 
-import java.math.BigDecimal;
-
 public class GuestHealthDetailsDao {
 
 	private String userEmail;
-	private BigDecimal guestRespirationRate;
-	private BigDecimal guestBloodPressure;
-	private Integer guestHeartRate;
-	private BigDecimal guestOxygenSaturation;
-	private BigDecimal guestHRVData;
-	private BigDecimal guestStressLevel;
-	private BigDecimal guestRelaxationLevel;
-	private BigDecimal guestEnergyLevel;
-	private Integer guestBodyShapeIndex;
-	private BigDecimal guestBodyMassIndex;
-	private Integer guestAge;
-	private BigDecimal guestHemoglobinLevel;
-	private BigDecimal guestFitnessLevel;
+	private String age;
+	private String gender;
+	private String height;
+	private String waistCircum;
+	private String bMICalc;
+	private String aBSI;
+	private String hRBPM;
+	private String bPSystolic;
+	private String hRVSDNN;
+	private String bPRPP;
+	private String bPTau;
+	private String bPBPM;
+	private String tHBCount;
+	private String healthScore;
+	private String mentalScore;
+	private String vitalScore;
+	private String physicalScore;
+	private String mSI;
+	private String bpHeartAttack;
+	private String bPStroke;
+	private String bPCVD;
+	private String risksScore;
+	private String sNR;
 	
 	public GuestHealthDetailsDao() {
 		super();
 	}
 
-	public GuestHealthDetailsDao(String userEmail, BigDecimal guestRespirationRate, BigDecimal guestBloodPressure,
-			Integer guestHeartRate, BigDecimal guestOxygenSaturation, BigDecimal guestHRVData,
-			BigDecimal guestStressLevel, BigDecimal guestRelaxationLevel, BigDecimal guestEnergyLevel,
-			Integer guestBodyShapeIndex, BigDecimal guestBodyMassIndex, Integer guestAge, BigDecimal guestHemoglobinLevel,
-			BigDecimal guestFitnessLevel) {
+	public GuestHealthDetailsDao(String userEmail, String age, String gender, String height, String waistCircum,
+			String bMICalc, String aBSI, String hRBPM, String bPSystolic, String hRVSDNN,
+			String bPRPP, String bPTau, String bPBPM, String tHBCount, String healthScore,
+			String mentalScore, String vitalScore, String physicalScore, String mSI,
+			String bpHeartAttack, String bPStroke, String bPCVD, String risksScore, String sNR) {
 		super();
 		this.userEmail = userEmail;
-		this.guestRespirationRate = guestRespirationRate;
-		this.guestBloodPressure = guestBloodPressure;
-		this.guestHeartRate = guestHeartRate;
-		this.guestOxygenSaturation = guestOxygenSaturation;
-		this.guestHRVData = guestHRVData;
-		this.guestStressLevel = guestStressLevel;
-		this.guestRelaxationLevel = guestRelaxationLevel;
-		this.guestEnergyLevel = guestEnergyLevel;
-		this.guestBodyShapeIndex = guestBodyShapeIndex;
-		this.guestBodyMassIndex = guestBodyMassIndex;
-		this.guestAge = guestAge;
-		this.guestHemoglobinLevel = guestHemoglobinLevel;
-		this.guestFitnessLevel = guestFitnessLevel;
+		this.age = age;
+		this.gender = gender;
+		this.height = height;
+		this.waistCircum = waistCircum;
+		this.bMICalc = bMICalc;
+		this.aBSI = aBSI;
+		this.hRBPM = hRBPM;
+		this.bPSystolic = bPSystolic;
+		this.hRVSDNN = hRVSDNN;
+		this.bPRPP = bPRPP;
+		this.bPTau = bPTau;
+		this.bPBPM = bPBPM;
+		this.tHBCount = tHBCount;
+		this.healthScore = healthScore;
+		this.mentalScore = mentalScore;
+		this.vitalScore = vitalScore;
+		this.physicalScore = physicalScore;
+		this.mSI = mSI;
+		this.bpHeartAttack = bpHeartAttack;
+		this.bPStroke = bPStroke;
+		this.bPCVD = bPCVD;
+		this.risksScore = risksScore;
+		this.sNR = sNR;
 	}
 
 	public String getUserEmail() {
@@ -53,119 +71,199 @@ public class GuestHealthDetailsDao {
 		this.userEmail = userEmail;
 	}
 
-	public BigDecimal getGuestRespirationRate() {
-		return guestRespirationRate;
+	public String getAge() {
+		return age;
 	}
 
-	public void setGuestRespirationRate(BigDecimal guestRespirationRate) {
-		this.guestRespirationRate = guestRespirationRate;
+	public void setAge(String age) {
+		this.age = age;
 	}
 
-	public BigDecimal getGuestBloodPressure() {
-		return guestBloodPressure;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setGuestBloodPressure(BigDecimal guestBloodPressure) {
-		this.guestBloodPressure = guestBloodPressure;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
-	public Integer getGuestHeartRate() {
-		return guestHeartRate;
+	public String getHeight() {
+		return height;
 	}
 
-	public void setGuestHeartRate(Integer guestHeartRate) {
-		this.guestHeartRate = guestHeartRate;
+	public void setHeight(String height) {
+		this.height = height;
 	}
 
-	public BigDecimal getGuestOxygenSaturation() {
-		return guestOxygenSaturation;
+	public String getWaistCircum() {
+		return waistCircum;
 	}
 
-	public void setGuestOxygenSaturation(BigDecimal guestOxygenSaturation) {
-		this.guestOxygenSaturation = guestOxygenSaturation;
+	public void setWaistCircum(String waistCircum) {
+		this.waistCircum = waistCircum;
 	}
 
-	public BigDecimal getGuestHRVData() {
-		return guestHRVData;
+	public String getbMICalc() {
+		return bMICalc;
 	}
 
-	public void setGuestHRVData(BigDecimal guestHRVData) {
-		this.guestHRVData = guestHRVData;
+	public void setbMICalc(String bMICalc) {
+		this.bMICalc = bMICalc;
 	}
 
-	public BigDecimal getGuestStressLevel() {
-		return guestStressLevel;
+	public String getaBSI() {
+		return aBSI;
 	}
 
-	public void setGuestStressLevel(BigDecimal guestStressLevel) {
-		this.guestStressLevel = guestStressLevel;
+	public void setaBSI(String aBSI) {
+		this.aBSI = aBSI;
 	}
 
-	public BigDecimal getGuestRelaxationLevel() {
-		return guestRelaxationLevel;
+	public String gethRBPM() {
+		return hRBPM;
 	}
 
-	public void setGuestRelaxationLevel(BigDecimal guestRelaxationLevel) {
-		this.guestRelaxationLevel = guestRelaxationLevel;
+	public void sethRBPM(String hRBPM) {
+		this.hRBPM = hRBPM;
 	}
 
-	public BigDecimal getGuestEnergyLevel() {
-		return guestEnergyLevel;
+	public String getbPSystolic() {
+		return bPSystolic;
 	}
 
-	public void setGuestEnergyLevel(BigDecimal guestEnergyLevel) {
-		this.guestEnergyLevel = guestEnergyLevel;
+	public void setbPSystolic(String bPSystolic) {
+		this.bPSystolic = bPSystolic;
 	}
 
-	public Integer getGuestBodyShapeIndex() {
-		return guestBodyShapeIndex;
+	public String gethRVSDNN() {
+		return hRVSDNN;
 	}
 
-	public void setGuestBodyShapeIndex(Integer guestBodyShapeIndex) {
-		this.guestBodyShapeIndex = guestBodyShapeIndex;
+	public void sethRVSDNN(String hRVSDNN) {
+		this.hRVSDNN = hRVSDNN;
 	}
 
-	public BigDecimal getGuestBodyMassIndex() {
-		return guestBodyMassIndex;
+	public String getbPRPP() {
+		return bPRPP;
 	}
 
-	public void setGuestBodyMassIndex(BigDecimal guestBodyMassIndex) {
-		this.guestBodyMassIndex = guestBodyMassIndex;
+	public void setbPRPP(String bPRPP) {
+		this.bPRPP = bPRPP;
 	}
 
-	public Integer getGuestAge() {
-		return guestAge;
+	public String getbPTau() {
+		return bPTau;
 	}
 
-	public void setGuestAge(Integer guestAge) {
-		this.guestAge = guestAge;
+	public void setbPTau(String bPTau) {
+		this.bPTau = bPTau;
 	}
 
-	public BigDecimal getGuestHemoglobinLevel() {
-		return guestHemoglobinLevel;
+	public String getbPBPM() {
+		return bPBPM;
 	}
 
-	public void setGuestHemoglobinLevel(BigDecimal guestHemoglobinLevel) {
-		this.guestHemoglobinLevel = guestHemoglobinLevel;
+	public void setbPBPM(String bPBPM) {
+		this.bPBPM = bPBPM;
 	}
 
-	public BigDecimal getGuestFitnessLevel() {
-		return guestFitnessLevel;
+	public String gettHBCount() {
+		return tHBCount;
 	}
 
-	public void setGuestFitnessLevel(BigDecimal guestFitnessLevel) {
-		this.guestFitnessLevel = guestFitnessLevel;
+	public void settHBCount(String tHBCount) {
+		this.tHBCount = tHBCount;
+	}
+
+	public String getHealthScore() {
+		return healthScore;
+	}
+
+	public void setHealthScore(String healthScore) {
+		this.healthScore = healthScore;
+	}
+
+	public String getMentalScore() {
+		return mentalScore;
+	}
+
+	public void setMentalScore(String mentalScore) {
+		this.mentalScore = mentalScore;
+	}
+
+	public String getVitalScore() {
+		return vitalScore;
+	}
+
+	public void setVitalScore(String vitalScore) {
+		this.vitalScore = vitalScore;
+	}
+
+	public String getPhysicalScore() {
+		return physicalScore;
+	}
+
+	public void setPhysicalScore(String physicalScore) {
+		this.physicalScore = physicalScore;
+	}
+
+	public String getmSI() {
+		return mSI;
+	}
+
+	public void setmSI(String mSI) {
+		this.mSI = mSI;
+	}
+
+	public String getBpHeartAttack() {
+		return bpHeartAttack;
+	}
+
+	public void setBpHeartAttack(String bpHeartAttack) {
+		this.bpHeartAttack = bpHeartAttack;
+	}
+
+	public String getbPStroke() {
+		return bPStroke;
+	}
+
+	public void setbPStroke(String bPStroke) {
+		this.bPStroke = bPStroke;
+	}
+
+	public String getbPCVD() {
+		return bPCVD;
+	}
+
+	public void setbPCVD(String bPCVD) {
+		this.bPCVD = bPCVD;
+	}
+
+	public String getRisksScore() {
+		return risksScore;
+	}
+
+	public void setRisksScore(String risksScore) {
+		this.risksScore = risksScore;
+	}
+
+	public String getsNR() {
+		return sNR;
+	}
+
+	public void setsNR(String sNR) {
+		this.sNR = sNR;
 	}
 
 	@Override
 	public String toString() {
-		return "GuestHealthDetailsDao [userEmail=" + userEmail + ", guestRespirationRate=" + guestRespirationRate
-				+ ", guestBloodPressure=" + guestBloodPressure + ", guestHeartRate=" + guestHeartRate
-				+ ", guestOxygenSaturation=" + guestOxygenSaturation + ", guestHRVData=" + guestHRVData
-				+ ", guestStressLevel=" + guestStressLevel + ", guestRelaxationLevel=" + guestRelaxationLevel
-				+ ", guestEnergyLevel=" + guestEnergyLevel + ", guestBodyShapeIndex=" + guestBodyShapeIndex
-				+ ", guestBodyMassIndex=" + guestBodyMassIndex + ", guestAge=" + guestAge + ", guestHemoglobinLevel="
-				+ guestHemoglobinLevel + ", guestFitnessLevel=" + guestFitnessLevel + "]";
+		return "GuestHealthDetailsDao [userEmail=" + userEmail + ", age=" + age + ", gender=" + gender + ", height="
+				+ height + ", waistCircum=" + waistCircum + ", bMICalc=" + bMICalc + ", aBSI=" + aBSI + ", hRBPM="
+				+ hRBPM + ", bPSystolic=" + bPSystolic + ", hRVSDNN=" + hRVSDNN + ", bPRPP=" + bPRPP + ", bPTau="
+				+ bPTau + ", bPBPM=" + bPBPM + ", tHBCount=" + tHBCount + ", healthScore=" + healthScore
+				+ ", mentalScore=" + mentalScore + ", vitalScore=" + vitalScore + ", physicalScore=" + physicalScore
+				+ ", mSI=" + mSI + ", bpHeartAttack=" + bpHeartAttack + ", bPStroke=" + bPStroke + ", bPCVD=" + bPCVD
+				+ ", risksScore=" + risksScore + ", sNR=" + sNR + "]";
 	}
-	
+
 }

@@ -10,28 +10,28 @@ import jakarta.persistence.Table;
 public class LegalSettings {
 
 	@Id
-	@Column(name = "legal_id", length = 10, unique = true)
+	@Column(name = "legal_id", unique = true, length = 255)
 	private String legalId;
 
-	@Column(name = "content", columnDefinition = "MEDIUMTEXT", length = 20, nullable = true)
+	@Column(name = "content", columnDefinition = "MEDIUMTEXT", nullable = true)
 	private String content;
 
-	@Column(name = "is_Agree", columnDefinition = "TINYINT(1)")
+	@Column(name = "is_Agree", columnDefinition = "TEXT")
 	private String isAgree;
 
-	@Column(name = "mod_person", length = 20, nullable = true)
+	@Column(name = "mod_person", columnDefinition = "TEXT")
 	private String lastModifiedPerson;
 
-	@Column(name = "regist_date", length = 20, nullable = true)
+	@Column(name = "regist_date", columnDefinition = "TEXT")
 	private String registDate;
 
-	@Column(name = "regist_pname", length = 50)
+	@Column(name = "regist_pname", columnDefinition = "TEXT")
 	private String registPName;
 
-	@Column(name = "last_update_date", length = 20, nullable = true)
+	@Column(name = "last_update_date", columnDefinition = "TEXT")
 	private String lastUpdateDate;
 
-	@Column(name = "last_update_pname", length = 50)
+	@Column(name = "last_update_pname", columnDefinition = "TEXT")
 	private String lastUpdatePName;
 
 	public LegalSettings() {

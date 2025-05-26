@@ -1,17 +1,14 @@
 package com.iss.dao;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-
 public class GuestUserSearchDao {
 
-	private Integer guestId;
+	private String guestId;
 	private String userEmail;
 	private String guestName;
 	private String guestGender;
-	private Date guestDOB;
-	private Double guestWeight;
-	private Double guestHeight;
+	private String guestDOB;
+	private String guestWeight;
+	private String guestHeight;
 	private String guestImage;
 	private String guestCurrentHealthCond;
 	private String guestCurrentMedication;
@@ -20,33 +17,32 @@ public class GuestUserSearchDao {
 	private String registPName;
 	private String lastUpdateDate;
 	private String lastUpdatePName;
-	private Integer guestHealthDetailId;
-	private BigDecimal guestRespirationRate;
-	private BigDecimal guestBloodPressure;
-	private Integer guestHeartRate;
-	private BigDecimal guestOxygenSaturation;
-	private BigDecimal guestHRVData;
-	private BigDecimal guestStressLevel;
-	private BigDecimal guestRelaxationLevel;
-	private BigDecimal guestEnergyLevel;
-	private Integer guestBodyShapeIndex;
-	private BigDecimal guestBodyMassIndex;
-	private Integer guestAge;
-	private Double guestHemoglobinLevel;
-	private BigDecimal guestFitnessLevel;
-	
+	private String guestHealthDetailId;
+	private String guestRespirationRate;
+	private String guestBloodPressure;
+	private String guestHeartRate;
+	private String guestOxygenSaturation;
+	private String guestHRVData;
+	private String guestStressLevel;
+	private String guestRelaxationLevel;
+	private String guestEnergyLevel;
+	private String guestBodyShapeIndex;
+	private String guestBodyMassIndex;
+	private String guestAge;
+	private String guestHemoglobinLevel;
+	private String guestFitnessLevel;
+
 	public GuestUserSearchDao() {
 		super();
 	}
 
-	public GuestUserSearchDao(Integer guestId, String userEmail, String guestName, String guestGender, Date guestDOB,
-			Double guestWeight, Double guestHeight, String guestImage, String guestCurrentHealthCond,
+	public GuestUserSearchDao(String guestId, String userEmail, String guestName, String guestGender, String guestDOB,
+			String guestWeight, String guestHeight, String guestImage, String guestCurrentHealthCond,
 			String guestCurrentMedication, String guestDrinkAlcohol, String registDate, String registPName,
-			String lastUpdateDate, String lastUpdatePName, Integer guestHealthDetailId, BigDecimal guestRespirationRate,
-			BigDecimal guestBloodPressure, Integer guestHeartRate, BigDecimal guestOxygenSaturation,
-			BigDecimal guestHRVData, BigDecimal guestStressLevel, BigDecimal guestRelaxationLevel,
-			BigDecimal guestEnergyLevel, Integer guestBodyShapeIndex, BigDecimal guestBodyMassIndex, Integer guestAge,
-			Double guestHemoglobinLevel, BigDecimal guestFitnessLevel) {
+			String lastUpdateDate, String lastUpdatePName, String guestHealthDetailId, String guestRespirationRate,
+			String guestBloodPressure, String guestHeartRate, String guestOxygenSaturation, String guestHRVData,
+			String guestStressLevel, String guestRelaxationLevel, String guestEnergyLevel, String guestBodyShapeIndex,
+			String guestBodyMassIndex, String guestAge, String guestHemoglobinLevel, String guestFitnessLevel) {
 		super();
 		this.guestId = guestId;
 		this.userEmail = userEmail;
@@ -79,11 +75,11 @@ public class GuestUserSearchDao {
 		this.guestFitnessLevel = guestFitnessLevel;
 	}
 
-	public Integer getGuestId() {
+	public String getGuestId() {
 		return guestId;
 	}
 
-	public void setGuestId(Integer guestId) {
+	public void setGuestId(String guestId) {
 		this.guestId = guestId;
 	}
 
@@ -111,27 +107,27 @@ public class GuestUserSearchDao {
 		this.guestGender = guestGender;
 	}
 
-	public Date getGuestDOB() {
+	public String getGuestDOB() {
 		return guestDOB;
 	}
 
-	public void setGuestDOB(Date guestDOB) {
+	public void setGuestDOB(String guestDOB) {
 		this.guestDOB = guestDOB;
 	}
 
-	public Double getGuestWeight() {
+	public String getGuestWeight() {
 		return guestWeight;
 	}
 
-	public void setGuestWeight(Double guestWeight) {
+	public void setGuestWeight(String guestWeight) {
 		this.guestWeight = guestWeight;
 	}
 
-	public Double getGuestHeight() {
+	public String getGuestHeight() {
 		return guestHeight;
 	}
 
-	public void setGuestHeight(Double guestHeight) {
+	public void setGuestHeight(String guestHeight) {
 		this.guestHeight = guestHeight;
 	}
 
@@ -199,115 +195,115 @@ public class GuestUserSearchDao {
 		this.lastUpdatePName = lastUpdatePName;
 	}
 
-	public Integer getGuestHealthDetailId() {
+	public String getGuestHealthDetailId() {
 		return guestHealthDetailId;
 	}
 
-	public void setGuestHealthDetailId(Integer guestHealthDetailId) {
+	public void setGuestHealthDetailId(String guestHealthDetailId) {
 		this.guestHealthDetailId = guestHealthDetailId;
 	}
 
-	public BigDecimal getGuestRespirationRate() {
+	public String getGuestRespirationRate() {
 		return guestRespirationRate;
 	}
 
-	public void setGuestRespirationRate(BigDecimal guestRespirationRate) {
+	public void setGuestRespirationRate(String guestRespirationRate) {
 		this.guestRespirationRate = guestRespirationRate;
 	}
 
-	public BigDecimal getGuestBloodPressure() {
+	public String getGuestBloodPressure() {
 		return guestBloodPressure;
 	}
 
-	public void setGuestBloodPressure(BigDecimal guestBloodPressure) {
+	public void setGuestBloodPressure(String guestBloodPressure) {
 		this.guestBloodPressure = guestBloodPressure;
 	}
 
-	public Integer getGuestHeartRate() {
+	public String getGuestHeartRate() {
 		return guestHeartRate;
 	}
 
-	public void setGuestHeartRate(Integer guestHeartRate) {
+	public void setGuestHeartRate(String guestHeartRate) {
 		this.guestHeartRate = guestHeartRate;
 	}
 
-	public BigDecimal getGuestOxygenSaturation() {
+	public String getGuestOxygenSaturation() {
 		return guestOxygenSaturation;
 	}
 
-	public void setGuestOxygenSaturation(BigDecimal guestOxygenSaturation) {
+	public void setGuestOxygenSaturation(String guestOxygenSaturation) {
 		this.guestOxygenSaturation = guestOxygenSaturation;
 	}
 
-	public BigDecimal getGuestHRVData() {
+	public String getGuestHRVData() {
 		return guestHRVData;
 	}
 
-	public void setGuestHRVData(BigDecimal guestHRVData) {
+	public void setGuestHRVData(String guestHRVData) {
 		this.guestHRVData = guestHRVData;
 	}
 
-	public BigDecimal getGuestStressLevel() {
+	public String getGuestStressLevel() {
 		return guestStressLevel;
 	}
 
-	public void setGuestStressLevel(BigDecimal guestStressLevel) {
+	public void setGuestStressLevel(String guestStressLevel) {
 		this.guestStressLevel = guestStressLevel;
 	}
 
-	public BigDecimal getGuestRelaxationLevel() {
+	public String getGuestRelaxationLevel() {
 		return guestRelaxationLevel;
 	}
 
-	public void setGuestRelaxationLevel(BigDecimal guestRelaxationLevel) {
+	public void setGuestRelaxationLevel(String guestRelaxationLevel) {
 		this.guestRelaxationLevel = guestRelaxationLevel;
 	}
 
-	public BigDecimal getGuestEnergyLevel() {
+	public String getGuestEnergyLevel() {
 		return guestEnergyLevel;
 	}
 
-	public void setGuestEnergyLevel(BigDecimal guestEnergyLevel) {
+	public void setGuestEnergyLevel(String guestEnergyLevel) {
 		this.guestEnergyLevel = guestEnergyLevel;
 	}
 
-	public Integer getGuestBodyShapeIndex() {
+	public String getGuestBodyShapeIndex() {
 		return guestBodyShapeIndex;
 	}
 
-	public void setGuestBodyShapeIndex(Integer guestBodyShapeIndex) {
+	public void setGuestBodyShapeIndex(String guestBodyShapeIndex) {
 		this.guestBodyShapeIndex = guestBodyShapeIndex;
 	}
 
-	public BigDecimal getGuestBodyMassIndex() {
+	public String getGuestBodyMassIndex() {
 		return guestBodyMassIndex;
 	}
 
-	public void setGuestBodyMassIndex(BigDecimal guestBodyMassIndex) {
+	public void setGuestBodyMassIndex(String guestBodyMassIndex) {
 		this.guestBodyMassIndex = guestBodyMassIndex;
 	}
 
-	public Integer getGuestAge() {
+	public String getGuestAge() {
 		return guestAge;
 	}
 
-	public void setGuestAge(Integer guestAge) {
+	public void setGuestAge(String guestAge) {
 		this.guestAge = guestAge;
 	}
 
-	public Double getGuestHemoglobinLevel() {
+	public String getGuestHemoglobinLevel() {
 		return guestHemoglobinLevel;
 	}
 
-	public void setGuestHemoglobinLevel(Double guestHemoglobinLevel) {
+	public void setGuestHemoglobinLevel(String guestHemoglobinLevel) {
 		this.guestHemoglobinLevel = guestHemoglobinLevel;
 	}
 
-	public BigDecimal getGuestFitnessLevel() {
+	public String getGuestFitnessLevel() {
 		return guestFitnessLevel;
 	}
 
-	public void setGuestFitnessLevel(BigDecimal guestFitnessLevel) {
+	public void setGuestFitnessLevel(String guestFitnessLevel) {
 		this.guestFitnessLevel = guestFitnessLevel;
 	}
 
@@ -327,4 +323,5 @@ public class GuestUserSearchDao {
 				+ ", guestBodyMassIndex=" + guestBodyMassIndex + ", guestAge=" + guestAge + ", guestHemoglobinLevel="
 				+ guestHemoglobinLevel + ", guestFitnessLevel=" + guestFitnessLevel + "]";
 	}
+
 }

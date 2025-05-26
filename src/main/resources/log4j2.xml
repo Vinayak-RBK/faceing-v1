@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <!-- Define log file path -->
+        <Property name="LOG_FILE">logs/application.log</Property>
+        <!-- Max log file size before rotation -->
+        <Property name="MAX_SIZE">10KB</Property>
+        <!-- Retain logs for 7 days -->
+        <Property name="MAX_HISTORY">1</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console Output -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+        </Console>
+
+        <!-- Rolling File Appender (Compression Included) -->
+        <RollingFile name="RollingFile"
+                     fileName="${LOG_FILE}"
+                     filePattern="logs/application-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- Rotate when file reaches 10KB -->
+                <SizeBasedTriggeringPolicy size="${MAX_SIZE}"/>
+                <!-- Rotate logs daily as well -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!-- Delete logs older than 7 days -->
+            <DefaultRolloverStrategy max="${MAX_HISTORY}" fileIndex="max"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,8 @@
+SELECT * FROM faceing.sdk_table;
+
+truncate table faceing.sdk_table;
+
+INSERT INTO `faceing`.`sdk_table` 
+(`primary_id`, `last_update_date`, `last_update_pname`, `regist_date`, `regist_pname`, `sdk_id`, `sdk_name`) VALUES
+ ('10', 'init', 'init', 'init', 'init', '0', 'Anura'),
+ ('11', 'init', 'init', 'init', 'init', '1', 'Binah');
